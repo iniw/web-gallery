@@ -19,11 +19,16 @@
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             nodejs_24
+
             vtsls
             vscode-langservers-extracted
             prettierd
+
             postgresql
+            pgformatter
           ];
+
+          PGDATA = "db/pgdata";
         };
       }
     );
