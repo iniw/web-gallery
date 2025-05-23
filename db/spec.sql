@@ -44,7 +44,8 @@ INSERT INTO category (name)
 INSERT INTO art (category_id, artist, name, date)
     VALUES (1, 'Jorge Ben', 'A Tábua de Esmeralda', '1974-05-01'),
     (1, 'Aphex Twin', 'Selected Ambient Works 85-92', '1999-01-08'),
-    (2, 'Richard Kelly', 'Donnie Darko', '2003-09-24');
+    (2, 'Richard Kelly', 'Donnie Darko', '2003-09-24'),
+    (3, 'Claude Monet', 'Impression, soleil levant', '1874-04-01');
 
 INSERT INTO app_user (username)
     VALUES ('vini'),

@@ -1,7 +1,8 @@
 import sql from "@/app/lib/sql";
-import { Calendar, Clapperboard, Disc3, User } from "lucide-react";
+import { Calendar, Clapperboard, Palette, Disc3, User } from "lucide-react";
 import Image from "next/image";
 import { ReactNode } from "react";
+import ArtInfo from "@/app/components/ArtInfo";
 
 export default async function Page({
   params,
@@ -18,43 +19,37 @@ export default async function Page({
 
   let icon: ReactNode;
   switch (row.category_id) {
-    case 1:
+    case 1: // Music
       icon = <Disc3 />;
       break;
-    case 2:
+    case 2: // Cinema
       icon = <Clapperboard />;
+      break;
+    case 3: // Painting
+      icon = <Palette />;
       break;
   }
 
   return (
-    <div className="flex p-5">
+    <div className="flex flex-col gap-10 p-5">
       <div className="flex gap-5">
         <Image
           className="border-1 drop-shadow-md"
           src={`/${id}/image.jpg`}
-          width={500}
-          height={500}
+          width={350}
+          height={350}
           alt={row.name}
         />
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            {icon}
-            <p className="text-3xl font-bold">{row.name}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <User />
-            <p className="text-2xl"> {row.artist}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Calendar />
-            <p className="text-xl">
-              {row.date.toLocaleDateString(navigator.languages[0], {
-                year: "numeric",
-                month: "2-digit",
-              })}
-            </p>
-          </div>
-        </div>
+        <ArtInfo
+          categoryId={row.category_id}
+          name={row.name}
+          artist={row.artist}
+          date={row.date}
+        />
+      </div>
+      <div className="flex h-[600px] w-full gap-5">
+        <div className="h-[600px] min-w-[350px] bg-blue-100" />
+        <div className="h-[600px] w-full bg-blue-100" />
       </div>
     </div>
   );
