@@ -1,10 +1,22 @@
-import ArtPieceImage from "./components/ArtImage";
-import ArtPieceInfo from "./components/ArtInfo";
+import ArtPieceImage from "./components/ArtPieceImage";
+import Card from "./components/Card";
 import sql from "./lib/sql";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { User } from "lucide-react";
+import { IconForCategory } from "./components/IconForCategory";
 
-export default async function Home() {
+export default async function Page() {
   const rows = await sql`
-    SELECT c.id as category_id, c.name as category_name, a.id as art_id, a.name as art_name, a.artist as art_artist, a.date as art_date
+    SELECT c.id as category_id,
+      c.name as category_name,
+      a.id as art_id,
+      a.name as art_name,
+      a.artist as art_artist,
+      a.date as art_date
     FROM category c,
     LATERAL (
       SELECT *
@@ -31,33 +43,28 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col gap-10 p-5">
+    <div className="flex flex-col gap-10">
       {Object.entries(artByCategory).map(([categoryId, category]) => (
-        <div key={categoryId}>
-          <span className="font-extrabold lg:text-5xl">{category.name}</span>
-          <div className="flex gap-5 overflow-x-auto py-2 pl-1">
+        <Card title={category.name} key={categoryId}>
+          <div className="flex gap-3">
             {category.arts.map((art) => (
-              <div key={art.id} className="group flex gap-5">
-                <ArtPieceImage
-                  key={art.id}
-                  artId={art.id}
-                  artName={art.name}
-                  width={250}
-                  height={250}
-                />
-                <div className="max-w-0 text-ellipsis transition-[max-width] duration-500 ease-in-out group-hover:max-w-500">
-                  <ArtPieceInfo
-                    className="truncate"
-                    categoryId={Number(categoryId)}
-                    name={art.name}
-                    artist={art.artist}
-                    date={art.date}
+              <HoverCard key={art.id}>
+                <HoverCardTrigger asChild>
+                  <ArtPieceImage
+                    key={art.id}
+                    artId={art.id}
+                    artName={art.name}
+                    width={250}
+                    height={250}
                   />
-                </div>
-              </div>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-auto max-w-100">
+                  <HoverContent categoryId={Number(categoryId)} art={art} />
+                </HoverCardContent>
+              </HoverCard>
             ))}
           </div>
-        </div>
+        </Card>
       ))}
     </div>
   );
@@ -72,5 +79,45 @@ type ArtByCategory = {
       artist: string;
       date: Date;
     }[];
+  };
+};
+
+function HoverContent(props: HoverContentProps) {
+  const entries = [
+    {
+      icon: (
+        <IconForCategory
+          categoryId={Number(props.categoryId)}
+          color="var(--artpiece-info-icon)"
+        />
+      ),
+      text: props.art.name,
+    },
+    {
+      icon: <User color="var(--artpiece-info-icon)" />,
+      text: props.art.artist,
+    },
+  ];
+  return (
+    <div className={"flex flex-col gap-2 text-2xl"}>
+      {entries.map((entry, i) => (
+        <p key={i} className="flex min-w-0 items-center gap-2">
+          {entry.icon}
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+            {entry.text}
+          </span>
+        </p>
+      ))}
+    </div>
+  );
+}
+
+type HoverContentProps = {
+  categoryId: number;
+  art: {
+    id: number;
+    name: string;
+    artist: string;
+    date: Date;
   };
 };

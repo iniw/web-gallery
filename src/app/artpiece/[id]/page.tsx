@@ -1,63 +1,63 @@
 import sql from "@/app/lib/sql";
-import { Calendar, Clapperboard, Palette, Disc3, User } from "lucide-react";
 import Image from "next/image";
-import { ReactNode } from "react";
-import ArtPieceInfo from "@/app/components/ArtInfo";
+import Info from "./info/components/Info";
+import Card from "@/app/components/Card";
+import Reviews from "./reviews/components/Reviews";
+import Comments from "./comments/components/Comments";
+import { getUser } from "@/app/lib/dal";
 
 export default async function Page({
   params,
 }: {
   params: Promise<{ id: number }>;
 }) {
-  const { id } = await params;
+  const { id: artpieceId } = await params;
+
+  const user = await getUser();
 
   const [row] = await sql`
     SELECT *
     FROM artpiece
-    WHERE artpiece.id = ${id}
-`;
+    WHERE id = ${artpieceId}
+  `;
 
-  let icon: ReactNode;
-  switch (row.category_id) {
-    case 1: // Music
-      icon = <Disc3 />;
-      break;
-    case 2: // Cinema
-      icon = <Clapperboard />;
-      break;
-    case 3: // Painting
-      icon = <Palette />;
-      break;
-  }
   return (
     <div
-      className="grid h-full gap-2"
+      className="grid h-full gap-5"
       style={{
         gridTemplateColumns: "1fr 3fr 1fr",
-        gridTemplateRows: "1fr 1fr",
+        gridTemplateRows: "1fr 1.25fr",
       }}
     >
-      <div className="flex items-center justify-center border p-5">
-        <Image
-          className={"drop-shadow-md"}
-          src={`/${row.id}/image.jpg`}
-          alt={row.name}
-          width="300"
-          height="300"
-        />
-      </div>
-      <div className="border p-5">
-        <ArtPieceInfo
-          categoryId={row.category_id}
-          name={row.name}
-          artist={row.artist}
-          date={row.date}
-        />
-      </div>
-      <div className="border p-5">C</div>
-      <div className="border p-5">D</div>
-      <div className="border p-5"></div>
-      <div className="border p-5">F</div>
+      <Card className="h-0 min-h-full w-0 min-w-full" title="Artwork">
+        <div className="flex h-full items-center justify-center">
+          <Image
+            className={"drop-shadow-md"}
+            src={`/artpiece/${row.id}/artwork.jpg`}
+            alt={row.name}
+            width="300"
+            height="300"
+          />
+        </div>
+      </Card>
+
+      <Card className="h-0 min-h-full w-0 min-w-full" title="Info">
+        <Info user={user} artpieceId={artpieceId} />
+      </Card>
+
+      <Card className="h-0 min-h-full w-0 min-w-full" title="Control"></Card>
+
+      <Card className="h-0 min-h-full w-0 min-w-full" title="Comments">
+        <Comments user={user} artpieceId={artpieceId} />
+      </Card>
+
+      <Card className="h-0 min-h-full w-0 min-w-full" title="Reviews">
+        <Reviews user={user} artpieceId={artpieceId} />
+      </Card>
+
+      <Card className="h-0 min-h-full w-0 min-w-full" title="Ratings">
+        Oi oi
+      </Card>
     </div>
   );
 }

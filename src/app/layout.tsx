@@ -1,8 +1,15 @@
 import ThemeProvider from "@/components/theme-provider";
 import Header from "./components/Header";
 import "./globals.css";
+import { getUser } from "./lib/dal";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const user = await getUser();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -11,7 +18,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           gridTemplateRows: "min-content 1fr",
         }}
       >
-        <Header />
+        {user ? (
+          <Header
+            userInfo={{
+              state: "authed",
+              username: user.username,
+            }}
+          />
+        ) : (
+          <Header
+            userInfo={{
+              state: "unauthed",
+            }}
+          />
+        )}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
