@@ -1,5 +1,5 @@
-import ArtImage from "./components/ArtImage";
-import ArtInfo from "./components/ArtInfo";
+import ArtPieceImage from "./components/ArtImage";
+import ArtPieceInfo from "./components/ArtInfo";
 import sql from "./lib/sql";
 
 export default async function Home() {
@@ -8,8 +8,8 @@ export default async function Home() {
     FROM category c,
     LATERAL (
       SELECT *
-      FROM art
-      WHERE art.category_id = c.id
+      FROM artpiece
+      WHERE artpiece.category_id = c.id
       LIMIT 20
     ) a
 `;
@@ -38,7 +38,7 @@ export default async function Home() {
           <div className="flex gap-5 overflow-x-auto py-2 pl-1">
             {category.arts.map((art) => (
               <div key={art.id} className="group flex gap-5">
-                <ArtImage
+                <ArtPieceImage
                   key={art.id}
                   artId={art.id}
                   artName={art.name}
@@ -46,7 +46,7 @@ export default async function Home() {
                   height={250}
                 />
                 <div className="max-w-0 text-ellipsis transition-[max-width] duration-500 ease-in-out group-hover:max-w-500">
-                  <ArtInfo
+                  <ArtPieceInfo
                     className="truncate"
                     categoryId={Number(categoryId)}
                     name={art.name}

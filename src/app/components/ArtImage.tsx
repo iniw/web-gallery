@@ -5,26 +5,26 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ComponentProps } from "react";
 
-interface ArtImageProps {
-  artId: number;
-  artName: string;
-}
-
-export default function ArtImage({
+export default function ArtPieceImage({
   artId,
   artName,
   className,
   ...imageProps
-}: ArtImageProps & Omit<ComponentProps<typeof Image>, "src" | "alt">) {
+}: ArtPieceImageProps & Omit<ComponentProps<typeof Image>, "src" | "alt">) {
   const router = useRouter();
 
   return (
     <Image
       {...imageProps}
       className={cn("drop-shadow-md", className)}
-      onClick={() => router.push(`/art/${artId}`)}
+      onClick={() => router.push(`/artpiece/${artId}`)}
       src={`/${artId}/image.jpg`}
       alt={artName}
     />
   );
+}
+
+interface ArtPieceImageProps {
+  artId: number;
+  artName: string;
 }

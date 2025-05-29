@@ -5,7 +5,12 @@ import "./globals.css";
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="overscroll-none">
+      <body
+        className="grid overscroll-none"
+        style={{
+          gridTemplateRows: "min-content 1fr",
+        }}
+      >
         <Header />
         <ThemeProvider
           attribute="class"
@@ -13,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <section className="col-start-1 row-start-2 p-5">{children}</section>
         </ThemeProvider>
       </body>
     </html>

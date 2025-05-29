@@ -2,7 +2,7 @@ import sql from "@/app/lib/sql";
 import { Calendar, Clapperboard, Palette, Disc3, User } from "lucide-react";
 import Image from "next/image";
 import { ReactNode } from "react";
-import ArtInfo from "@/app/components/ArtInfo";
+import ArtPieceInfo from "@/app/components/ArtInfo";
 
 export default async function Page({
   params,
@@ -13,8 +13,8 @@ export default async function Page({
 
   const [row] = await sql`
     SELECT *
-    FROM art
-    WHERE art.id = ${id}
+    FROM artpiece
+    WHERE artpiece.id = ${id}
 `;
 
   let icon: ReactNode;
@@ -29,28 +29,35 @@ export default async function Page({
       icon = <Palette />;
       break;
   }
-
   return (
-    <div className="flex flex-col gap-10 p-5">
-      <div className="flex gap-5">
+    <div
+      className="grid h-full gap-2"
+      style={{
+        gridTemplateColumns: "1fr 3fr 1fr",
+        gridTemplateRows: "1fr 1fr",
+      }}
+    >
+      <div className="flex items-center justify-center border p-5">
         <Image
-          className="border-1 drop-shadow-md"
-          src={`/${id}/image.jpg`}
-          width={350}
-          height={350}
+          className={"drop-shadow-md"}
+          src={`/${row.id}/image.jpg`}
           alt={row.name}
+          width="300"
+          height="300"
         />
-        <ArtInfo
+      </div>
+      <div className="border p-5">
+        <ArtPieceInfo
           categoryId={row.category_id}
           name={row.name}
           artist={row.artist}
           date={row.date}
         />
       </div>
-      <div className="flex h-[600px] w-full gap-5">
-        <div className="h-[600px] min-w-[350px] bg-blue-100" />
-        <div className="h-[600px] w-full bg-blue-100" />
-      </div>
+      <div className="border p-5">C</div>
+      <div className="border p-5">D</div>
+      <div className="border p-5"></div>
+      <div className="border p-5">F</div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
--- The category of an art piece.
+-- The category of an artpiece.
 -- e.g: music, cinema, painting, etc.
 CREATE TABLE category (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -7,9 +7,9 @@ CREATE TABLE category (
     created_at timestamptz DEFAULT now()
 );
 
--- An art piece.
+-- A piece of art.
 -- e.g: album, movie, e.p, painting, photo, etc.
-CREATE TABLE art (
+CREATE TABLE artpiece (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     category_id integer NOT NULL REFERENCES category (id) ON DELETE RESTRICT,
     -- The artist of the art piece
@@ -30,8 +30,8 @@ CREATE TABLE app_user (
 
 CREATE TABLE rating (
     user_id integer NOT NULL REFERENCES app_user (id) ON DELETE CASCADE,
-    art_id integer NOT NULL REFERENCES art (id) ON DELETE CASCADE,
-    PRIMARY KEY (user_id, art_id),
+    artpiece_id integer NOT NULL REFERENCES artpiece (id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, artpiece_id),
     rating integer NOT NULL CHECK (rating BETWEEN 0 AND 10),
     created_at timestamptz DEFAULT now()
 );
@@ -41,7 +41,7 @@ INSERT INTO category (name)
     ('Cinema'),
     ('Paintings');
 
-INSERT INTO art (category_id, artist, name, date)
+INSERT INTO artpiece (category_id, artist, name, date)
     VALUES (1, 'Jorge Ben', 'A Tábua de Esmeralda', '1974-05-01'),
     (1, 'Aphex Twin', 'Selected Ambient Works 85-92', '1999-01-08'),
     (2, 'Richard Kelly', 'Donnie Darko', '2003-09-24'),
@@ -51,9 +51,8 @@ INSERT INTO app_user (username)
     VALUES ('vini'),
     ('foyer');
 
-INSERT INTO rating (user_id, art_id, rating)
+INSERT INTO rating (user_id, artpiece_id, rating)
     VALUES (1, 1, 10),
     (1, 2, 9),
     (1, 3, 10),
     (2, 2, 10);
-

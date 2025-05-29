@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Disc3, Clapperboard, Palette, User, Calendar } from "lucide-react";
 import { ReactNode } from "react";
 
-export default function ArtInfo(props: ArtInfoProps) {
+export default function ArtPieceInfo(props: ArtPieceInfoProps) {
   let icon: ReactNode;
   switch (props.categoryId) {
     case 1: // Music
@@ -39,7 +39,7 @@ export default function ArtInfo(props: ArtInfoProps) {
   );
 }
 
-interface ArtInfoProps {
+interface ArtPieceInfoProps {
   categoryId: number;
   name: string;
   artist: string;
