@@ -42,10 +42,23 @@ INSERT INTO category (name)
     ('Paintings');
 
 INSERT INTO artpiece (category_id, artist, name, date)
-    VALUES (1, 'Jorge Ben', 'A Tábua de Esmeralda', '1974-05-01'),
+    VALUES 
+    (1, 'Jorge Ben', 'A Tábua de Esmeralda', '1974-05-01'),
     (1, 'Aphex Twin', 'Selected Ambient Works 85-92', '1999-01-08'),
     (2, 'Richard Kelly', 'Donnie Darko', '2003-09-24'),
-    (3, 'Claude Monet', 'Impression, soleil levant', '1874-04-01');
+    (3, 'Claude Monet', 'Impression, soleil levant', '1874-04-01'),
+    (1, 'Bob Dylan', 'Bringing It All Back Home', '1965-03-22'),
+    (2, 'Emir Kusturica', 'Underground', '1995-10-25'),
+    (3, 'Aleksander Rostov', 'Conquest of Revachol', '2020-05-04'),
+    (1, 'Victor & Leo', 'Borboletas', '2008-09-01'),
+    (2, 'John Lasseter', 'Cars', '2006-07-30'),
+    (3, 'Salvador Dalí', 'La persistència de la memòria', '1931-01-01'),
+    (1, 'Gorillaz', 'Demon Days', '2005-05-11'),
+    (2, 'David Fincher', 'Fight Club', '1999-10-15'),
+    (3, 'Vincent Van Gogh', 'Tournesols', '1889-01-01'),
+    (1, 'Death Grips', 'Fashion Week', '2015-01-04'),
+    (2, 'Stuart Gordon', 'Re-Animator', '1985-10-18'),
+    (3, 'Vincent Van Gogh', 'At Eternitys Gate', '1890-01-01');
 
 INSERT INTO app_user (username)
     VALUES ('vini'),
