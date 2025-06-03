@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/shadcn/lib/utils";
 import { ReactNode } from "react";
 
 export default function Card(props: CellProps) {

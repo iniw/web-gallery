@@ -1,10 +1,10 @@
 "use server";
 
-import { SignupDataSchema } from "../lib/schema";
-import bcrypt from "bcrypt";
+import { createSession } from "@/app/lib/auth/session";
 import sql from "@/app/lib/sql";
-import { createSession } from "@/app/lib/session";
+import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+import { SignupDataSchema } from "../lib/schema";
 
 export default async function signup(_: unknown, formData: FormData) {
   const fields = SignupDataSchema.safeParse({
@@ -33,7 +33,7 @@ export default async function signup(_: unknown, formData: FormData) {
     return {
       message: "Username must be unique.",
     };
-  } finally {
-    redirect("/");
   }
+
+  redirect("/");
 }

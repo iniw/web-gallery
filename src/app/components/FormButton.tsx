@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shadcn/components/button";
+import { LoaderCircle } from "lucide-react";
 import { ComponentProps } from "react";
 import ButtonWithTooltip from "./ButtonWithTooltip";
-import { LoaderCircle } from "lucide-react";
 
 export default function FormButton({
   tooltip,

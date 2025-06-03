@@ -1,13 +1,13 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/shadcn/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ComponentProps } from "react";
 
 export default function ArtPieceImage({
-  artId,
-  artName,
+  artpieceId,
+  artpieceName,
   className,
   ...imageProps
 }: ArtPieceImageProps & Omit<ComponentProps<typeof Image>, "src" | "alt">) {
@@ -17,14 +17,14 @@ export default function ArtPieceImage({
     <Image
       {...imageProps}
       className={cn("drop-shadow-md", className)}
-      onClick={() => router.push(`/artpiece/${artId}`)}
-      src={`/artpiece/${artId}/artwork.jpg`}
-      alt={artName}
+      onClick={() => router.push(`/artpiece/${artpieceId}`)}
+      src={`/artpiece/${artpieceId}/artwork.jpg`}
+      alt={artpieceName}
     />
   );
 }
 
 interface ArtPieceImageProps {
-  artId: number;
-  artName: string;
+  artpieceId: number;
+  artpieceName: string;
 }

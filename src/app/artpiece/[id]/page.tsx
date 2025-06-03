@@ -1,10 +1,11 @@
+import Card from "@/app/components/Card";
+import { getUser } from "@/app/lib/auth/user";
 import sql from "@/app/lib/sql";
 import Image from "next/image";
-import Info from "./info/components/Info";
-import Card from "@/app/components/Card";
-import Reviews from "./reviews/components/Reviews";
 import Comments from "./comments/components/Comments";
-import { getUser } from "@/app/lib/dal";
+import Control from "./control/components/Control";
+import Info from "./info/components/Info";
+import Reviews from "./reviews/components/Reviews";
 
 export default async function Page({
   params,
@@ -45,7 +46,9 @@ export default async function Page({
         <Info user={user} artpieceId={artpieceId} />
       </Card>
 
-      <Card className="h-0 min-h-full w-0 min-w-full" title="Control"></Card>
+      <Card className="h-0 min-h-full w-0 min-w-full" title="Control">
+        <Control user={user} artpieceId={artpieceId} />
+      </Card>
 
       <Card className="h-0 min-h-full w-0 min-w-full" title="Comments">
         <Comments user={user} artpieceId={artpieceId} />

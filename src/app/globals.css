@@ -110,10 +110,6 @@
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
-:root {
-  --artpiece-info-icon: var(--muted-foreground);
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -121,4 +117,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+:root {
+  --artpiece-info-icon: var(--muted-foreground);
 }

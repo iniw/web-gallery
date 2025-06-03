@@ -1,65 +1,51 @@
-import ArtPieceImage from "./components/ArtPieceImage";
-import Card from "./components/Card";
-import sql from "./lib/sql";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
+} from "@/shadcn/components/hover-card";
 import { User } from "lucide-react";
+import React from "react";
+import ArtPieceImage from "./components/ArtPieceImage";
+import Card from "./components/Card";
 import { IconForCategory } from "./components/IconForCategory";
+import sql from "./lib/sql";
 
 export default async function Page() {
   const rows = await sql`
-    SELECT c.id as category_id,
-      c.name as category_name,
-      a.id as art_id,
-      a.name as art_name,
-      a.artist as art_artist,
-      a.date as art_date
-    FROM category c,
-    LATERAL (
-      SELECT *
-      FROM artpiece
-      WHERE artpiece.category_id = c.id
-      LIMIT 20
-    ) a
-`;
-
-  const artByCategory: ArtByCategory = {};
-  for (const row of rows) {
-    if (!artByCategory[row.category_id])
-      artByCategory[row.category_id] = {
-        name: row.category_name,
-        arts: [],
-      };
-
-    artByCategory[row.category_id].arts.push({
-      id: row.art_id,
-      name: row.art_name,
-      artist: row.art_artist,
-      date: row.art_date,
-    });
-  }
+    SELECT
+      category.*,
+      JSONB_AGG(
+        JSONB_BUILD_OBJECT(
+          'id', artpiece.id,
+          'name', artpiece.name,
+          'artist', artpiece.artist,
+          'date', artpiece.date
+        )
+        ORDER BY artpiece.id
+      ) AS artpieces
+    FROM category
+    JOIN artpiece ON artpiece.category_id = category.id
+    GROUP BY category.id
+  `;
 
   return (
     <div className="flex flex-col gap-10">
-      {Object.entries(artByCategory).map(([categoryId, category]) => (
-        <Card title={category.name} key={categoryId}>
+      {rows.map((category: any) => (
+        <Card title={category.name} key={category.id}>
           <div className="flex gap-3">
-            {category.arts.map((art) => (
-              <HoverCard key={art.id}>
+            {category.artpieces.map((artpiece: any) => (
+              <HoverCard key={artpiece.id}>
                 <HoverCardTrigger asChild>
                   <ArtPieceImage
-                    key={art.id}
-                    artId={art.id}
-                    artName={art.name}
+                    key={artpiece.id}
+                    artpieceId={artpiece.id}
+                    artpieceName={artpiece.name}
                     width={250}
                     height={250}
                   />
                 </HoverCardTrigger>
                 <HoverCardContent className="w-auto max-w-100">
-                  <HoverContent categoryId={Number(categoryId)} art={art} />
+                  <ArtworkHover categoryId={category.id} artpiece={artpiece} />
                 </HoverCardContent>
               </HoverCard>
             ))}
@@ -70,39 +56,25 @@ export default async function Page() {
   );
 }
 
-type ArtByCategory = {
-  [id: number]: {
-    name: string;
-    arts: {
-      id: number;
-      name: string;
-      artist: string;
-      date: Date;
-    }[];
-  };
-};
-
-function HoverContent(props: HoverContentProps) {
+function ArtworkHover(props: HoverContentProps) {
   const entries = [
     {
-      icon: (
-        <IconForCategory
-          categoryId={Number(props.categoryId)}
-          color="var(--artpiece-info-icon)"
-        />
-      ),
-      text: props.art.name,
+      icon: <IconForCategory categoryId={props.categoryId} />,
+      text: props.artpiece.name,
     },
     {
-      icon: <User color="var(--artpiece-info-icon)" />,
-      text: props.art.artist,
+      icon: <User />,
+      text: props.artpiece.artist,
     },
   ];
+
   return (
     <div className={"flex flex-col gap-2 text-2xl"}>
       {entries.map((entry, i) => (
         <p key={i} className="flex min-w-0 items-center gap-2">
-          {entry.icon}
+          {React.cloneElement(entry.icon, {
+            color: "var(--artpiece-info-icon)",
+          })}
           <span className="overflow-hidden text-ellipsis whitespace-nowrap">
             {entry.text}
           </span>
@@ -114,7 +86,7 @@ function HoverContent(props: HoverContentProps) {
 
 type HoverContentProps = {
   categoryId: number;
-  art: {
+  artpiece: {
     id: number;
     name: string;
     artist: string;

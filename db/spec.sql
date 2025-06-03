@@ -1,5 +1,5 @@
 -- The category of an artpiece.
--- e.g: music, cinema, painting
+-- e.g: Music, Cinema, Painting
 CREATE TABLE category (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     -- The name of this category
@@ -8,7 +8,7 @@ CREATE TABLE category (
 );
 
 -- A piece of art.
--- e.g: Album, Movie, E.P, Painting, Photo
+-- e.g: A Tábua de Esmeralda, Cartola (1974)
 CREATE TABLE artpiece (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     category_id integer NOT NULL REFERENCES category (id) ON DELETE RESTRICT,
@@ -26,7 +26,7 @@ CREATE TYPE app_user_role AS ENUM (
     'user'
 );
 
--- A user of the application.
+-- A Web Gallery user
 CREATE TABLE app_user (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     username text UNIQUE NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE app_user (
 );
 
 -- A genre, belonging to a specific category of art
--- e.g: Post-Rock, Impressionism, Horror
+-- e.g: Post-Rock (Music), Impressionism (Painting), Horror (Film)
 CREATE TABLE genre (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     category_id integer NOT NULL REFERENCES category (id) ON DELETE RESTRICT,
@@ -58,6 +58,50 @@ CREATE TABLE artpiece_secondary_genre (
     artpiece_id integer NOT NULL REFERENCES artpiece (id) ON DELETE CASCADE,
     genre_id integer NOT NULL REFERENCES genre (id) ON DELETE CASCADE,
     PRIMARY KEY (artpiece_id, genre_id),
+    inserted_at timestamptz DEFAULT now()
+);
+
+-- The language an artpiece can be in. Doesn't apply to all artpieces (e.g: paintings)
+-- e.g: English, Portuguese
+CREATE TABLE artpiece_language (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    name text NOT NULL,
+    inserted_at timestamptz DEFAULT now()
+);
+
+-- The NxN relationship between artpiece <=> artpiece language
+CREATE TABLE artpiece_artpiece_language (
+    artpiece_id integer NOT NULL REFERENCES artpiece (id) ON DELETE CASCADE,
+    artpiece_language_id integer NOT NULL REFERENCES artpiece_language (id) ON DELETE CASCADE,
+    PRIMARY KEY (artpiece_id, artpiece_language_id),
+    inserted_at timestamptz DEFAULT now()
+);
+
+-- The "type" of an artpiece can be in. This is very vague and doesn't necessarily apply to every artpiece/category, but it simplifies the queries.
+-- e.g: Album, EP, Short
+CREATE TABLE artpiece_type (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    name text NOT NULL,
+    inserted_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE artpiece_artpiece_type (
+    artpiece_id integer NOT NULL REFERENCES artpiece (id) ON DELETE CASCADE,
+    artpiece_type_id integer NOT NULL REFERENCES artpiece_type (id) ON DELETE CASCADE,
+    PRIMARY KEY (artpiece_id, artpiece_type_id),
+    inserted_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE artpiece_keyword (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    name text NOT NULL,
+    inserted_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE artpiece_artpiece_keyword (
+    artpiece_id integer NOT NULL REFERENCES artpiece (id) ON DELETE CASCADE,
+    artpiece_keyword_id integer NOT NULL REFERENCES artpiece_keyword (id) ON DELETE CASCADE,
+    PRIMARY KEY (artpiece_id, artpiece_keyword_id),
     inserted_at timestamptz DEFAULT now()
 );
 
@@ -91,7 +135,8 @@ CREATE TABLE comment (
 INSERT INTO category (name)
     VALUES ('Music'),
     ('Film'),
-    ('Painting');
+    ('Painting'),
+    ('Empty');
 
 INSERT INTO artpiece (category_id, artist, name, date)
     VALUES (1, 'Jorge Ben', 'A Tábua de Esmeralda', '1974-05-01'),
@@ -135,4 +180,29 @@ INSERT INTO artpiece_genre (artpiece_id, genre_id)
 INSERT INTO artpiece_secondary_genre (artpiece_id, genre_id)
     VALUES (1, 2),
     (2, 5);
+
+INSERT INTO artpiece_language (name)
+    VALUES ('English'),
+    ('Portuguese');
+
+INSERT INTO artpiece_artpiece_language (artpiece_id, artpiece_language_id)
+    VALUES (1, 2),
+    (5, 1);
+
+INSERT INTO artpiece_type (name)
+    VALUES ('Album'),
+    ('EP');
+
+INSERT INTO artpiece_artpiece_type (artpiece_id, artpiece_type_id)
+    VALUES (1, 1),
+    (2, 1);
+
+INSERT INTO artpiece_keyword (name)
+    VALUES ('Warm'),
+    ('Tropical'),
+    ('Uplifting');
+
+INSERT INTO artpiece_artpiece_keyword (artpiece_id, artpiece_keyword_id)
+    VALUES (1, 1),
+    (2, 1);
 

@@ -1,8 +1,8 @@
-import { User } from "@/app/lib/dal";
+import { User } from "@/app/lib/auth/user";
 import sql from "@/app/lib/sql";
-import ReviewForm from "./ReviewForm";
+import { Textarea } from "@/shadcn/components/textarea";
 import ControlReviewForm from "./ControlReviewForm";
-import { Textarea } from "@/components/ui/textarea";
+import ReviewForm from "./ReviewForm";
 
 export default async function Reviews(props: ReviewsProps) {
   const user = props.user;

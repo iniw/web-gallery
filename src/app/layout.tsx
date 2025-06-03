@@ -1,7 +1,7 @@
-import ThemeProvider from "@/components/theme-provider";
+import ThemeProvider from "@/shadcn/components/theme-provider";
 import Header from "./components/Header";
 import "./globals.css";
-import { getUser } from "./lib/dal";
+import { getUser } from "./lib/auth/user";
 
 export default async function Layout({
   children,

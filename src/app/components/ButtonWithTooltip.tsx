@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shadcn/components/button";
 import {
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
-} from "@/components/ui/tooltip";
+  TooltipTrigger,
+} from "@/shadcn/components/tooltip";
 import { ComponentProps } from "react";
 
 export default function ButtonWithTooltip({

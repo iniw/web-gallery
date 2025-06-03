@@ -1,11 +1,11 @@
 "use client";
 
-import { Textarea } from "@/components/ui/textarea";
-import { SendHorizontal } from "lucide-react";
-import create_review from "../actions/create_review";
-import { useActionState, useRef } from "react";
-import Form from "next/form";
 import FormButton from "@/app/components/FormButton";
+import { SendHorizontal } from "lucide-react";
+import Form from "next/form";
+import { useActionState, useRef } from "react";
+import create_review from "../actions/create_review";
+import ReviewTextarea from "./ReviewTextArea";
 
 export default function ReviewForm(props: ReviewFormProps) {
   const contentRef = useRef<HTMLTextAreaElement>(null);
@@ -19,11 +19,7 @@ export default function ReviewForm(props: ReviewFormProps) {
   return (
     <Form action={formAction}>
       <fieldset disabled={isPending} className="relative">
-        <Textarea
-          ref={contentRef}
-          className="h-12 resize-none transition-[height] duration-300 focus:h-60 dark:bg-secondary"
-          placeholder="Leave your review"
-        />
+        <ReviewTextarea ref={contentRef} />
         <FormButton
           type="submit"
           isPending={isPending}

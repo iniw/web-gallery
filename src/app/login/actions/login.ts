@@ -1,10 +1,10 @@
 "use server";
 
-import { LoginDataSchema } from "../lib/schema";
-import bcrypt from "bcrypt";
+import { createSession } from "@/app/lib/auth/session";
 import sql from "@/app/lib/sql";
-import { createSession } from "@/app/lib/session";
+import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+import { LoginDataSchema } from "../lib/schema";
 
 export default async function login(_: unknown, formData: FormData) {
   const fields = LoginDataSchema.safeParse({

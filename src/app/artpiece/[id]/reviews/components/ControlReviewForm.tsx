@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import ButtonWithTooltip from "@/app/components/ButtonWithTooltip";
+import FormButton from "@/app/components/FormButton";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,19 +12,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@/shadcn/components/alert-dialog";
+import { Button } from "@/shadcn/components/button";
 import {
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
-} from "@/components/ui/tooltip";
-import ButtonWithTooltip from "@/app/components/ButtonWithTooltip";
+  TooltipTrigger,
+} from "@/shadcn/components/tooltip";
 import { LoaderCircle, Pencil, SendHorizontal, Trash, X } from "lucide-react";
-import { useActionState, useRef, useState } from "react";
 import Form from "next/form";
-import update_review from "../actions/update_review";
+import { useActionState, useRef, useState } from "react";
 import delete_review from "../actions/delete_review";
-import FormButton from "@/app/components/FormButton";
+import update_review from "../actions/update_review";
+import ReviewTextarea from "./ReviewTextArea";
 
 export default function ControlReviewForm(props: ControlReviewFormProps) {
   const contentRef = useRef<HTMLTextAreaElement>(null);
@@ -54,13 +54,11 @@ export default function ControlReviewForm(props: ControlReviewFormProps) {
       action={() => {}}
     >
       <fieldset disabled={editIsPending || deleteIsPending}>
-        <Textarea
+        <ReviewTextarea
           ref={contentRef}
-          className="resize-none"
           defaultValue={props.content}
           readOnly={!editing}
         />
-
         <div className="absolute top-0 right-0 z-15 mt-3.5 mr-3 flex flex-row-reverse gap-2">
           {editing ? (
             <>

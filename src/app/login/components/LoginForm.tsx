@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/shadcn/components/button";
 import {
   Form,
   FormControl,
@@ -7,14 +8,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import login from "../actions/login";
+} from "@/shadcn/components/form";
+import { Input } from "@/shadcn/components/input";
+import Link from "next/link";
 import { useActionState } from "react";
 import { Control, useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
+import login from "../actions/login";
 import { LoginData } from "../lib/schema";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 export default function LoginForm() {
   const [state, action] = useActionState(login, undefined);

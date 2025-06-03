@@ -1,4 +1,4 @@
-import { Disc3, Clapperboard, Palette, Heart, LucideProps } from "lucide-react";
+import { Clapperboard, Disc3, Heart, LucideProps, Palette } from "lucide-react";
 
 export function IconForCategory({
   categoryId,

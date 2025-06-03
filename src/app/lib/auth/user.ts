@@ -1,15 +1,9 @@
 "use server";
 
+import { decrypt } from "@/app/lib/auth/session";
+import sql from "@/app/lib/sql";
 import { cookies } from "next/headers";
-import { decrypt } from "@/app/lib/session";
 import { cache } from "react";
-import sql from "./sql";
-
-export const sessionUserId = cache(async (): Promise<number | undefined> => {
-  const cookie = (await cookies()).get("session")?.value;
-  const session = await decrypt(cookie);
-  return session?.userId as number | undefined;
-});
 
 export type User = {
   id: number;
@@ -17,8 +11,14 @@ export type User = {
   user_role: "admin" | "user";
 };
 
+export const getSessionUserId = cache(async (): Promise<number | undefined> => {
+  const cookie = (await cookies()).get("session")?.value;
+  const session = await decrypt(cookie);
+  return session?.userId as number | undefined;
+});
+
 export const getUser = cache(async (): Promise<User | undefined> => {
-  const userId = await sessionUserId();
+  const userId = await getSessionUserId();
   if (!userId) return undefined;
 
   try {

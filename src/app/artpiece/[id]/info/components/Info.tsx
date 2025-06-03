@@ -1,95 +1,100 @@
-import { User as AppUser } from "@/app/lib/dal";
-import sql from "@/app/lib/sql";
 import { IconForCategory } from "@/app/components/IconForCategory";
-import { Calendar, Dna, User } from "lucide-react";
+import { User } from "@/app/lib/auth/user";
+import sql from "@/app/lib/sql";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@/shadcn/components/tooltip";
+import {
+  Calendar,
+  CircleHelp,
+  Dna,
+  Languages,
+  List,
+  User as UserIcon,
+} from "lucide-react";
+import React from "react";
 
 export default async function Info(props: InfoProps) {
-  const rows = await sql`
-    SELECT
-      artpiece.*,
-      genre.name as genre,
-      secondary_genre.name as secondary_genre
-    FROM artpiece
-    LEFT JOIN artpiece_genre ON artpiece_genre.artpiece_id = ${props.artpieceId}
-    LEFT JOIN artpiece_secondary_genre ON artpiece_secondary_genre.artpiece_id = ${props.artpieceId}
-    LEFT JOIN genre ON genre.id = artpiece_genre.genre_id
-    LEFT JOIN genre secondary_genre ON secondary_genre.id = artpiece_secondary_genre.genre_id
-    WHERE artpiece.id = ${props.artpieceId}
-  `;
+  const [row] = await sql`
+  SELECT
+    artpiece.*,
+    artpiece_type.name as type,
+    STRING_AGG(DISTINCT genre.name, ', ') as genres,
+    STRING_AGG(DISTINCT secondary_genre.name, ', ') as secondary_genres,
+    STRING_AGG(DISTINCT artpiece_language.name, ', ') as languages,
+    STRING_AGG(DISTINCT artpiece_keyword.name, ', ') as keywords
 
-  const [row] = rows;
+  FROM artpiece
 
-  // FIXME: Figure out how to get rid of this ridiculousness.
-  const genres = [...new Set(rows.map((row: any) => row.genre))];
-  const secondary_genres = [
-    ...new Set(rows.map((row: any) => row.secondary_genre)),
-  ];
+  LEFT JOIN artpiece_genre ON artpiece_genre.artpiece_id = artpiece.id
+  LEFT JOIN genre ON genre.id = artpiece_genre.genre_id
 
-  const has_multiple_genres = genres.length + secondary_genres.length > 1;
+  LEFT JOIN artpiece_secondary_genre ON artpiece_secondary_genre.artpiece_id = artpiece.id
+  LEFT JOIN genre secondary_genre ON secondary_genre.id = artpiece_secondary_genre.genre_id
+
+  LEFT JOIN artpiece_artpiece_language ON artpiece_artpiece_language.artpiece_id = artpiece.id
+  LEFT JOIN artpiece_language ON artpiece_language.id = artpiece_artpiece_language.artpiece_language_id
+
+  LEFT JOIN artpiece_artpiece_type ON artpiece_artpiece_type.artpiece_id = artpiece.id
+  LEFT JOIN artpiece_type ON artpiece_type.id = artpiece_artpiece_type.artpiece_type_id
+
+  LEFT JOIN artpiece_artpiece_keyword ON artpiece_artpiece_keyword.artpiece_id = artpiece.id
+  LEFT JOIN artpiece_keyword ON artpiece_keyword.id = artpiece_artpiece_keyword.artpiece_keyword_id
+
+  WHERE artpiece.id = ${props.artpieceId}
+
+  GROUP BY artpiece.id, artpiece_type.name
+`;
 
   const entries = [
     {
-      icon: (
-        <IconForCategory
-          className="min-h-min min-w-min"
-          categoryId={row.category_id}
-          color="var(--artpiece-info-icon)"
-        />
-      ),
-      node: <div className="text-wrap">{row.name}</div>,
+      icon: <IconForCategory categoryId={row.category_id} />,
+      content: row.name,
       tooltip: "Name",
     },
     {
-      icon: (
-        <User
-          className="min-h-min min-w-min"
-          color="var(--artpiece-info-icon)"
-        />
-      ),
-      node: <div className="text-wrap">{row.artist}</div>,
+      icon: <UserIcon />,
+      content: row.artist,
       tooltip: "Artist",
     },
     {
-      icon: (
-        <Calendar
-          className="min-h-min min-w-min"
-          color="var(--muted-foreground)"
-        />
-      ),
-      node: (
-        <div className="text-wrap">
-          {row.date.toLocaleDateString(navigator.languages[0], {
-            year: "numeric",
-            month: "2-digit",
-          })}
-        </div>
-      ),
+      icon: <Calendar />,
+      content: row.date.toLocaleDateString(navigator.languages[0], {
+        year: "numeric",
+        month: "2-digit",
+      }),
       tooltip: "Date",
     },
     {
-      icon: (
-        <Dna className="min-h-min min-w-min" color="var(--muted-foreground)" />
-      ),
-      node: (
+      icon: <Languages />,
+      content: row.languages,
+      tooltip: "Languages",
+    },
+    {
+      icon: <CircleHelp />,
+      content: row.type,
+      tooltip: "Type",
+    },
+    {
+      icon: <Dna />,
+      content: (
         <div className="flex flex-col">
-          <div className="text-wrap">
-            {genres.join(", ") || (
-              <span className="text-muted-foreground">No genres</span>
-            )}
-          </div>
-          {secondary_genres.length > 0 && (
+          <InfoEntry content={row.genres} />
+          {row.secondary_genres && row.secondary_genres.length > 0 && (
             <div className="text-lg text-wrap text-muted-foreground">
-              {secondary_genres.join(", ")}
+              {row.secondary_genres}
             </div>
           )}
         </div>
       ),
-      tooltip: "Genre" + (has_multiple_genres ? "s" : ""),
+      tooltip: "Genres",
+    },
+    {
+      icon: <List />,
+      content: row.keywords,
+      tooltip: "Keywords",
     },
   ];
 
@@ -99,10 +104,19 @@ export default async function Info(props: InfoProps) {
         {entries.map((entry, i) => (
           <div key={i} className="flex min-w-0 items-center gap-2">
             <Tooltip>
-              <TooltipTrigger asChild>{entry.icon}</TooltipTrigger>
+              <TooltipTrigger asChild>
+                {React.cloneElement(entry.icon, {
+                  className: "min-h-min min-w-min",
+                  color: "var(--artpiece-info-icon)",
+                })}
+              </TooltipTrigger>
               <TooltipContent>{entry.tooltip}</TooltipContent>
             </Tooltip>
-            {entry.node}
+            {React.isValidElement(entry.content) ? (
+              entry.content
+            ) : (
+              <InfoEntry content={entry.content} />
+            )}
           </div>
         ))}
       </div>
@@ -114,3 +128,11 @@ type InfoProps = {
   artpieceId: number;
   user?: User;
 };
+
+function InfoEntry({ content }: { content: string }) {
+  return (
+    <div className="text-wrap">
+      {content || <span className="text-muted-foreground">Unknown</span>}
+    </div>
+  );
+}

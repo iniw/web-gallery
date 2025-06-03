@@ -1,6 +1,6 @@
+import { User } from "@/app/lib/auth/user";
 import sql from "@/app/lib/sql";
 import CommentForm from "./CommentForm";
-import { User } from "@/app/lib/dal";
 
 export default async function Comments(props: CommentsProps) {
   const user = props.user;

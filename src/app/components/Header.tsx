@@ -1,18 +1,18 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
+import logout from "@/app/actions/logout";
+import { Button } from "@/shadcn/components/button";
 import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import logout from "@/app/actions/logout";
+} from "@/shadcn/components/dropdown-menu";
+import { Input } from "@/shadcn/components/input";
+import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Header(props: HeaderProps) {
   return (

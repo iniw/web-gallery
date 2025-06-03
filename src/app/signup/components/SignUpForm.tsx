@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/shadcn/components/button";
 import {
   Form,
   FormControl,
@@ -8,13 +9,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import signup from "../actions/signup";
+} from "@/shadcn/components/form";
+import { Input } from "@/shadcn/components/input";
 import { useActionState } from "react";
 import { Control, useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
+import signup from "../actions/signup";
 import { SignupData } from "../lib/schema";
-import { Button } from "@/components/ui/button";
 
 export default function SignupForm() {
   const [state, action] = useActionState(signup, null);

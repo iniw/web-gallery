@@ -1,11 +1,11 @@
 "use client";
 
-import { SendHorizontal } from "lucide-react";
-import create_comment from "../actions/create_comment";
-import { useActionState, useRef } from "react";
-import Form from "next/form";
-import { Input } from "@/components/ui/input";
 import FormButton from "@/app/components/FormButton";
+import { Input } from "@/shadcn/components/input";
+import { SendHorizontal } from "lucide-react";
+import Form from "next/form";
+import { useActionState, useRef } from "react";
+import create_comment from "../actions/create_comment";
 
 export default function CommentForm(props: CommentFormProps) {
   const contentRef = useRef<HTMLInputElement>(null);
