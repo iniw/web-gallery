@@ -33,32 +33,34 @@ export default function CommentForm(props: CommentFormProps) {
 
   return (
     <Form {...form}>
-      <NextForm action={formAction} className="flex w-full gap-3 pb-5">
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem className="grow">
-              <FormControl>
-                <Input
-                  placeholder="Leave a comment"
-                  {...field}
-                  value={field.value ?? ""}
-                />
-              </FormControl>
-              <FormMessage>{state?.errors?.content}</FormMessage>
-            </FormItem>
-          )}
-        />
-        <FormButton
-          type="submit"
-          variant="outline"
-          tooltip="Submit comment"
-          isPending={isPending}
-        >
-          <SendHorizontal />
-        </FormButton>
-        {state?.message && <FormMessage>{state.message}</FormMessage>}
+      <NextForm action={formAction} className="w-full gap-3 pb-2">
+        <div className="flex gap-2.5">
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <FormItem className="grow">
+                <FormControl>
+                  <Input
+                    placeholder="Leave a comment"
+                    {...field}
+                    value={field.value ?? ""}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormButton
+            type="submit"
+            variant="outline"
+            isPending={isPending}
+            tooltip="Submit comment"
+          >
+            <SendHorizontal />
+          </FormButton>
+        </div>
+        <FormMessage className="mt-1">{state?.errors?.content}</FormMessage>
+        <FormMessage className="mt-1">{state?.message}</FormMessage>
       </NextForm>
     </Form>
   );

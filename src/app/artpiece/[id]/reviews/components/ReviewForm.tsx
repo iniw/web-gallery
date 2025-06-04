@@ -47,7 +47,7 @@ export default function ReviewForm(props: ReviewFormProps) {
         >
           <SendHorizontal />
         </FormButton>
-        {state?.message && <FormMessage>{state.message}</FormMessage>}
+        <FormMessage>{state?.message}</FormMessage>
       </NextForm>
     </Form>
   );

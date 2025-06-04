@@ -31,7 +31,7 @@ export default async function signup(_formState: unknown, formData: FormData) {
     await createSession(row.id);
   } catch {
     return {
-      message: "Username must be unique.",
+      message: "Username must be unique",
     };
   }
 

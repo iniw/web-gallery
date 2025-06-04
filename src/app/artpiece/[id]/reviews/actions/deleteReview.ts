@@ -24,7 +24,7 @@ export default async function deleteReview(
     `;
   } catch {
     return {
-      message: "Internal error when deleting review.",
+      message: "Internal error when deleting review",
     };
   }
 

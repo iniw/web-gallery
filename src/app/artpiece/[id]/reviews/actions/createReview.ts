@@ -37,7 +37,7 @@ export default async function createReview(
     `;
   } catch {
     return {
-      message: "Internal error when creating review.",
+      message: "Internal error when creating review",
     };
   }
 

@@ -37,7 +37,7 @@ export default async function createComment(
     `;
   } catch {
     return {
-      message: "Internal error when creating comment.",
+      message: "Internal error when creating comment",
     };
   }
 

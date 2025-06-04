@@ -39,9 +39,7 @@ export default function LoginForm() {
           type="password"
         />
         <Button type="submit">Sign In</Button>
-        {state?.message && (
-          <FormMessage className="text-center">{state.message}</FormMessage>
-        )}
+        <FormMessage className="text-center">{state?.message}</FormMessage>
         <div className="text-center text-sm">
           Don&apos;t have an account?{" "}
           <Link href="/signup" className="underline underline-offset-4">

@@ -29,7 +29,7 @@ export default async function login(_formState: unknown, formData: FormData) {
 
   if (!row) {
     return {
-      message: "Invalid username.",
+      message: "Invalid username",
     };
   }
 
@@ -41,7 +41,7 @@ export default async function login(_formState: unknown, formData: FormData) {
   const correctPassword = await checkPassword(username, password);
   if (!correctPassword)
     return {
-      message: "Incorrect password.",
+      message: "Incorrect password",
     };
 
   await createSession(row.id);

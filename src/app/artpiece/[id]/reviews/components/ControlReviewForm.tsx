@@ -26,7 +26,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shadcn/components/tooltip";
-import { LoaderCircle, Pencil, SendHorizontal, Trash, X } from "lucide-react";
+import { Pencil, SendHorizontal, Trash, X } from "lucide-react";
 import NextForm from "next/form";
 import { useActionState, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -123,13 +123,12 @@ export default function ControlReviewForm(props: ControlReviewFormProps) {
                 <AlertDialog>
                   <TooltipTrigger asChild>
                     <AlertDialogTrigger asChild>
-                      <Button variant="destructive">
-                        {deleteIsPending ? (
-                          <LoaderCircle className="animate-spin" />
-                        ) : (
-                          <Trash />
-                        )}
-                      </Button>
+                      <FormButton
+                        isPending={deleteIsPending}
+                        variant="destructive"
+                      >
+                        <Trash />
+                      </FormButton>
                     </AlertDialogTrigger>
                   </TooltipTrigger>
                   <AlertDialogContent>

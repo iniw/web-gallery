@@ -4,19 +4,22 @@ import { ComponentProps } from "react";
 import ButtonWithTooltip from "./ButtonWithTooltip";
 
 export default function FormButton({
-  tooltip,
   isPending,
+  tooltip,
   children,
   ...props
 }: FormButtonProps) {
-  return (
+  const body = isPending ? <LoaderCircle className="animate-spin" /> : children;
+  return tooltip ? (
     <ButtonWithTooltip tooltip={tooltip} {...props}>
-      {isPending ? <LoaderCircle className="animate-spin" /> : children}
+      {body}
     </ButtonWithTooltip>
+  ) : (
+    <Button {...props}>{body}</Button>
   );
 }
 
 type FormButtonProps = {
-  tooltip: string;
   isPending: boolean;
+  tooltip?: string;
 } & ComponentProps<typeof Button>;
