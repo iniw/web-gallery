@@ -5,12 +5,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ComponentProps } from "react";
 
-export default function ArtPieceImage({
+export default function ArtworkPortal({
   artpieceId,
   artpieceName,
   className,
   ...imageProps
-}: ArtPieceImageProps & Omit<ComponentProps<typeof Image>, "src" | "alt">) {
+}: ArtworkPortalProps) {
   const router = useRouter();
 
   return (
@@ -24,7 +24,7 @@ export default function ArtPieceImage({
   );
 }
 
-interface ArtPieceImageProps {
+type ArtworkPortalProps = {
   artpieceId: number;
   artpieceName: string;
-}
+} & Omit<ComponentProps<typeof Image>, "src" | "alt">;

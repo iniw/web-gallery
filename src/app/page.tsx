@@ -5,7 +5,7 @@ import {
 } from "@/shadcn/components/hover-card";
 import { User } from "lucide-react";
 import React from "react";
-import ArtPieceImage from "./components/ArtPieceImage";
+import ArtworkPortal from "./components/ArtworkPortal";
 import Card from "./components/Card";
 import { IconForCategory } from "./components/IconForCategory";
 import sql from "./lib/sql";
@@ -36,7 +36,7 @@ export default async function Page() {
             {category.artpieces.map((artpiece: any) => (
               <HoverCard key={artpiece.id}>
                 <HoverCardTrigger asChild>
-                  <ArtPieceImage
+                  <ArtworkPortal
                     key={artpiece.id}
                     artpieceId={artpiece.id}
                     artpieceName={artpiece.name}
@@ -45,7 +45,10 @@ export default async function Page() {
                   />
                 </HoverCardTrigger>
                 <HoverCardContent className="w-auto max-w-100">
-                  <ArtworkHover categoryId={category.id} artpiece={artpiece} />
+                  <ArtpieceInfoHover
+                    categoryId={category.id}
+                    artpiece={artpiece}
+                  />
                 </HoverCardContent>
               </HoverCard>
             ))}
@@ -56,7 +59,7 @@ export default async function Page() {
   );
 }
 
-function ArtworkHover(props: HoverContentProps) {
+function ArtpieceInfoHover(props: ArtpieceInfoHoverProps) {
   const entries = [
     {
       icon: <IconForCategory categoryId={props.categoryId} />,
@@ -84,7 +87,7 @@ function ArtworkHover(props: HoverContentProps) {
   );
 }
 
-type HoverContentProps = {
+type ArtpieceInfoHoverProps = {
   categoryId: number;
   artpiece: {
     id: number;

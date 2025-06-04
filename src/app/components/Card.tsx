@@ -1,7 +1,7 @@
 import { cn } from "@/shadcn/lib/utils";
 import { ReactNode } from "react";
 
-export default function Card(props: CellProps) {
+export default function Card(props: CardProps) {
   return (
     <div
       className={cn(
@@ -15,8 +15,8 @@ export default function Card(props: CellProps) {
   );
 }
 
-interface CellProps {
+type CardProps = {
   title: string;
   children?: ReactNode;
   className?: string;
-}
+};

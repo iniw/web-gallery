@@ -83,7 +83,7 @@ function InputField(props: InputFieldProps) {
   );
 }
 
-interface InputFieldProps {
+type InputFieldProps = {
   control: Control<SignupData>;
   name: keyof SignupData;
   label: string;
@@ -91,4 +91,4 @@ interface InputFieldProps {
   placeholder?: string;
   errors?: string[];
   type?: string;
-}
+};

@@ -5,7 +5,7 @@ import { ComponentProps } from "react";
 export default function ReviewTextarea({
   className,
   ...props
-}: Omit<ComponentProps<typeof Textarea>, "placeholder">) {
+}: ReviewTextAreaProps) {
   return (
     <Textarea
       {...props}
@@ -17,3 +17,5 @@ export default function ReviewTextarea({
     />
   );
 }
+
+type ReviewTextAreaProps = Omit<ComponentProps<typeof Textarea>, "placeholder">;

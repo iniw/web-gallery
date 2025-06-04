@@ -86,11 +86,11 @@ function InputField(props: InputFieldProps) {
   );
 }
 
-interface InputFieldProps {
+type InputFieldProps = {
   control: Control<LoginData>;
   name: keyof LoginData;
   label: string;
   placeholder?: string;
   errors?: string[];
   type?: string;
-}
+};
