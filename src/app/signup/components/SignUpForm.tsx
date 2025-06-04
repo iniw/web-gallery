@@ -11,19 +11,20 @@ import {
   FormMessage,
 } from "@/shadcn/components/form";
 import { Input } from "@/shadcn/components/input";
+import NextForm from "next/form";
 import { useActionState } from "react";
 import { Control, useForm } from "react-hook-form";
 import signup from "../actions/signup";
-import { SignupData } from "../lib/schema";
+import { SignupFormData } from "../lib/SignUpFormSchema";
 
 export default function SignupForm() {
   const [state, action] = useActionState(signup, null);
 
-  const form = useForm<SignupData>();
+  const form = useForm<SignupFormData>();
 
   return (
     <Form {...form}>
-      <form className="flex flex-col gap-5" action={action}>
+      <NextForm className="flex flex-col gap-5" action={action}>
         <InputField
           control={form.control}
           name="username"
@@ -43,7 +44,7 @@ export default function SignupForm() {
         {state?.message && (
           <FormMessage className="text-center">{state.message}</FormMessage>
         )}
-      </form>
+      </NextForm>
     </Form>
   );
 }
@@ -84,8 +85,8 @@ function InputField(props: InputFieldProps) {
 }
 
 type InputFieldProps = {
-  control: Control<SignupData>;
-  name: keyof SignupData;
+  control: Control<SignupFormData>;
+  name: keyof SignupFormData;
   label: string;
   description: string;
   placeholder?: string;

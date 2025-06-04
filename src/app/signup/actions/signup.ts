@@ -4,21 +4,21 @@ import { createSession } from "@/app/lib/auth/session";
 import sql from "@/app/lib/sql";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
-import { SignupDataSchema } from "../lib/schema";
+import { SignupFormSchema } from "../lib/SignUpFormSchema";
 
-export default async function signup(_: unknown, formData: FormData) {
-  const fields = SignupDataSchema.safeParse({
+export default async function signup(_formState: unknown, formData: FormData) {
+  const parse = SignupFormSchema.safeParse({
     username: formData.get("username"),
     password: formData.get("password"),
   });
 
-  if (!fields.success) {
+  if (!parse.success) {
     return {
-      errors: fields.error.flatten().fieldErrors,
+      errors: parse.error.flatten().fieldErrors,
     };
   }
 
-  const { username, password } = fields.data;
+  const { username, password } = parse.data;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   try {

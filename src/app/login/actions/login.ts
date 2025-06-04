@@ -4,21 +4,21 @@ import { createSession } from "@/app/lib/auth/session";
 import sql from "@/app/lib/sql";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
-import { LoginDataSchema } from "../lib/schema";
+import { LoginFormSchema } from "../lib/LoginFormSchema";
 
-export default async function login(_: unknown, formData: FormData) {
-  const fields = LoginDataSchema.safeParse({
+export default async function login(_formState: unknown, formData: FormData) {
+  const parse = LoginFormSchema.safeParse({
     username: formData.get("username"),
     password: formData.get("password"),
   });
 
-  if (!fields.success) {
+  if (!parse.success) {
     return {
-      errors: fields.error.flatten().fieldErrors,
+      errors: parse.error.flatten().fieldErrors,
     };
   }
 
-  const { username, password } = fields.data;
+  const { username, password } = parse.data;
 
   const [row] = await sql`
     SELECT id, password

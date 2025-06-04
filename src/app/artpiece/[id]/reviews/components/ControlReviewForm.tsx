@@ -15,68 +15,91 @@ import {
 } from "@/shadcn/components/alert-dialog";
 import { Button } from "@/shadcn/components/button";
 import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/shadcn/components/form";
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/shadcn/components/tooltip";
 import { LoaderCircle, Pencil, SendHorizontal, Trash, X } from "lucide-react";
-import Form from "next/form";
-import { useActionState, useRef, useState } from "react";
-import delete_review from "../actions/delete_review";
-import update_review from "../actions/update_review";
+import NextForm from "next/form";
+import { useActionState, useState } from "react";
+import { useForm } from "react-hook-form";
+import deleteReview from "../actions/deleteReview";
+import updateReview from "../actions/updateReview";
+import { ReviewFormData } from "../lib/ReviewFormSchema";
 import ReviewTextarea from "./ReviewTextArea";
 
 export default function ControlReviewForm(props: ControlReviewFormProps) {
-  const contentRef = useRef<HTMLTextAreaElement>(null);
-
-  const [_updateState, editFormAction, editIsPending] = useActionState(() => {
-    const content = contentRef?.current?.value;
-    if (content && content.length > 1) {
-      setEditing(false);
-      update_review(props.userId, props.artpieceId, content);
-    }
-  }, null);
-
-  const [_deleteState, deleteFormAction, deleteIsPending] = useActionState(
-    () => {
-      delete_review(props.userId, props.artpieceId);
+  const updateAction = updateReview.bind(null, props.userId, props.artpieceId);
+  const [updateState, updateFormAction, updateIsPending] = useActionState(
+    async (formState: unknown, formData: FormData) => {
+      const ret = await updateAction(formState, formData);
+      if (!(ret?.errors || ret?.message)) setEditing(false);
+      return ret;
     },
     null,
   );
 
+  const deleteAction = deleteReview.bind(null, props.userId, props.artpieceId);
+  const [deleteState, deleteFormAction, deleteIsPending] = useActionState(
+    deleteAction,
+    null,
+  );
+
+  const form = useForm<ReviewFormData>({
+    disabled: updateIsPending || deleteIsPending,
+  });
+
   const [editing, setEditing] = useState(false);
 
   return (
-    <Form
-      className="relative"
-      id="controlForm"
-      // Overwriten by the deletion and edit button
-      action={() => {}}
-    >
-      <fieldset disabled={editIsPending || deleteIsPending}>
-        <ReviewTextarea
-          ref={contentRef}
-          defaultValue={props.content}
-          readOnly={!editing}
+    <Form {...form}>
+      <NextForm className="relative" id="controlForm" action={updateFormAction}>
+        <FormField
+          control={form.control}
+          name="content"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <ReviewTextarea
+                  defaultValue={props.content}
+                  readOnly={!editing}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage>{updateState?.errors?.content}</FormMessage>
+            </FormItem>
+          )}
         />
+        {updateState?.message && (
+          <FormMessage>{updateState?.message}</FormMessage>
+        )}
+        {deleteState?.message && (
+          <FormMessage>{deleteState?.message}</FormMessage>
+        )}
         <div className="absolute top-0 right-0 z-15 mt-3.5 mr-3 flex flex-row-reverse gap-2">
           {editing ? (
             <>
               <FormButton
                 key="submit"
                 type="submit"
-                formAction={editFormAction}
-                isPending={editIsPending}
+                isPending={updateIsPending}
                 tooltip="Update review"
               >
                 <SendHorizontal />
               </FormButton>
               <ButtonWithTooltip
+                key="cancel"
                 variant="destructive"
                 onClick={() => {
                   setEditing(false);
-                  if (contentRef?.current?.value)
-                    contentRef.current.value = props.content;
+                  form.setValue("content", props.content);
                 }}
                 tooltip="Cancel edit"
               >
@@ -88,8 +111,8 @@ export default function ControlReviewForm(props: ControlReviewFormProps) {
               <ButtonWithTooltip
                 key="edit"
                 onClick={() => {
-                  contentRef?.current?.focus();
                   setEditing(true);
+                  form.setFocus("content");
                 }}
                 tooltip="Edit review"
               >
@@ -135,7 +158,7 @@ export default function ControlReviewForm(props: ControlReviewFormProps) {
             </>
           )}
         </div>
-      </fieldset>
+      </NextForm>
     </Form>
   );
 }

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const SignupDataSchema =
+export const SignupFormSchema =
   process.env.NODE_ENV === "production"
     ? z.object({
         username: z
@@ -24,4 +24,4 @@ export const SignupDataSchema =
         password: z.string().trim(),
       });
 
-export type SignupData = z.infer<typeof SignupDataSchema>;
+export type SignupFormData = z.infer<typeof SignupFormSchema>;

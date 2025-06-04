@@ -8,7 +8,7 @@ import { cache } from "react";
 export type User = {
   id: number;
   username: string;
-  user_role: "admin" | "user";
+  role: "admin" | "user";
 };
 
 export const getSessionUserId = cache(async (): Promise<number | undefined> => {
@@ -33,7 +33,7 @@ export const getUser = cache(async (): Promise<User | undefined> => {
     return {
       id: userId,
       username: row.username,
-      user_role: row.user_role,
+      role: row.user_role,
     };
   } catch (error) {
     console.log(`Failed to fetch user (error: ${error})`);
