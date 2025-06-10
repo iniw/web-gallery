@@ -34,6 +34,8 @@ export default async function createReview(
     await sql`
       INSERT INTO review (user_id, artpiece_id, content)
       VALUES (${userId}, ${artpieceId}, ${content})
+      ON CONFLICT (user_id, artpiece_id)
+      DO UPDATE SET content = EXCLUDED.content
     `;
   } catch {
     return {

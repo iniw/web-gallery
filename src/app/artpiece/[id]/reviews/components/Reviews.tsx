@@ -1,6 +1,7 @@
 import { User } from "@/app/lib/auth/user";
 import sql from "@/app/lib/sql";
 import { Textarea } from "@/shadcn/components/textarea";
+import RatingDisplay from "@/app/components/RatingDisplay";
 import ControlReviewForm from "./ControlReviewForm";
 import ReviewForm from "./ReviewForm";
 
@@ -41,18 +42,11 @@ export default async function Reviews(props: ReviewsProps) {
             <div key={row.user_id} className="last:pb-5">
               <div className="text-md mb-1 flex items-center gap-2 px-1 font-semibold">
                 {row.username}
-                <div className="ml-auto tabular-nums">
+                <div className="ml-auto font-normal">
                   {row.rating ? (
-                    <span className="text-amber-300">
-                      {row.rating}{" "}
-                      <span className="font-semibold text-muted-foreground">
-                        / 10
-                      </span>
-                    </span>
+                    <RatingDisplay value={row.rating} />
                   ) : (
-                    <span className="font-normal text-muted-foreground">
-                      Unrated
-                    </span>
+                    <span className="text-muted-foreground">Unrated</span>
                   )}
                 </div>
               </div>

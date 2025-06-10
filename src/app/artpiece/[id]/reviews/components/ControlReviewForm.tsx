@@ -26,20 +26,20 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shadcn/components/tooltip";
-import { Pencil, SendHorizontal, Trash, X } from "lucide-react";
+import { Edit, SendHorizontal, Trash, X } from "lucide-react";
 import NextForm from "next/form";
 import { useActionState, useState } from "react";
 import { useForm } from "react-hook-form";
+import createReview from "../actions/createReview";
 import deleteReview from "../actions/deleteReview";
-import updateReview from "../actions/updateReview";
 import { ReviewFormData } from "../lib/ReviewFormSchema";
 import ReviewTextarea from "./ReviewTextArea";
 
 export default function ControlReviewForm(props: ControlReviewFormProps) {
-  const updateAction = updateReview.bind(null, props.userId, props.artpieceId);
-  const [updateState, updateFormAction, updateIsPending] = useActionState(
+  const createAction = createReview.bind(null, props.userId, props.artpieceId);
+  const [createState, createFormAction, createIsPending] = useActionState(
     async (formState: unknown, formData: FormData) => {
-      const ret = await updateAction(formState, formData);
+      const ret = await createAction(formState, formData);
       if (!(ret?.errors || ret?.message)) setEditing(false);
       return ret;
     },
@@ -53,14 +53,14 @@ export default function ControlReviewForm(props: ControlReviewFormProps) {
   );
 
   const form = useForm<ReviewFormData>({
-    disabled: updateIsPending || deleteIsPending,
+    disabled: createIsPending || deleteIsPending,
   });
 
   const [editing, setEditing] = useState(false);
 
   return (
     <Form {...form}>
-      <NextForm className="relative" id="controlForm" action={updateFormAction}>
+      <NextForm className="relative" id="controlForm" action={createFormAction}>
         <FormField
           control={form.control}
           name="content"
@@ -73,12 +73,12 @@ export default function ControlReviewForm(props: ControlReviewFormProps) {
                   {...field}
                 />
               </FormControl>
-              <FormMessage>{updateState?.errors?.content}</FormMessage>
+              <FormMessage>{createState?.errors?.content}</FormMessage>
             </FormItem>
           )}
         />
-        {updateState?.message && (
-          <FormMessage>{updateState?.message}</FormMessage>
+        {createState?.message && (
+          <FormMessage>{createState?.message}</FormMessage>
         )}
         {deleteState?.message && (
           <FormMessage>{deleteState?.message}</FormMessage>
@@ -89,7 +89,7 @@ export default function ControlReviewForm(props: ControlReviewFormProps) {
               <FormButton
                 key="submit"
                 type="submit"
-                isPending={updateIsPending}
+                isPending={createIsPending}
                 tooltip="Update review"
               >
                 <SendHorizontal />
@@ -110,13 +110,14 @@ export default function ControlReviewForm(props: ControlReviewFormProps) {
             <>
               <ButtonWithTooltip
                 key="edit"
+                variant="outline"
                 onClick={() => {
                   setEditing(true);
                   form.setFocus("content");
                 }}
                 tooltip="Edit review"
               >
-                <Pencil />
+                <Edit />
               </ButtonWithTooltip>
 
               <Tooltip>

@@ -43,6 +43,7 @@ export default function CommentForm(props: CommentFormProps) {
                 <FormControl>
                   <Input
                     placeholder="Leave a comment"
+                    autoComplete="off"
                     {...field}
                     value={field.value ?? ""}
                   />

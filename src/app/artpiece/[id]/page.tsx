@@ -5,6 +5,7 @@ import Image from "next/image";
 import Comments from "./comments/components/Comments";
 import Control from "./control/components/Control";
 import Info from "./info/components/Info";
+import Ratings from "./ratings/components/Ratings";
 import Reviews from "./reviews/components/Reviews";
 
 export default async function Page({
@@ -59,7 +60,7 @@ export default async function Page({
       </Card>
 
       <Card className="h-0 min-h-full w-0 min-w-full" title="Ratings">
-        Oi oi
+        <Ratings artpieceId={artpieceId} />
       </Card>
     </div>
   );
