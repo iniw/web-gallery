@@ -34,9 +34,10 @@ export default async function Page() {
         <Card title={category.name} key={category.id}>
           <div className="flex gap-3">
             {category.artpieces.map((artpiece: any) => (
-              <HoverCard key={artpiece.id}>
+              <HoverCard openDelay={0} closeDelay={0} key={artpiece.id}>
                 <HoverCardTrigger asChild>
                   <ArtworkPortal
+                    className="transition-[scale] duration-200 hover:scale-102"
                     key={artpiece.id}
                     artpieceId={artpiece.id}
                     artpieceName={artpiece.name}
