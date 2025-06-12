@@ -53,7 +53,6 @@ export default function CommentForm(props: CommentFormProps) {
           />
           <FormButton
             type="submit"
-            variant="outline"
             isPending={isPending}
             tooltip="Submit comment"
           >

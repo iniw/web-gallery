@@ -109,7 +109,7 @@ export default function RatingForm(props: RatingFormProps) {
                         key="submit"
                         type="submit"
                         isPending={createIsPending}
-                        tooltip="Save rating"
+                        tooltip="Submit rating"
                       >
                         <SendHorizontal />
                       </FormButton>

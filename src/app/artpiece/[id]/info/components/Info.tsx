@@ -6,6 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shadcn/components/tooltip";
+import { cn } from "@/shadcn/lib/utils";
 import {
   Calendar,
   CircleHelp,
@@ -14,39 +15,50 @@ import {
   List,
   User as UserIcon,
 } from "lucide-react";
-import React from "react";
+import Link from "next/link";
+import React, { Fragment } from "react";
 
 export default async function Info(props: InfoProps) {
   const [row] = await sql`
-  SELECT
-    artpiece.*,
-    artpiece_type.name as type,
-    STRING_AGG(DISTINCT genre.name, ', ') as genres,
-    STRING_AGG(DISTINCT secondary_genre.name, ', ') as secondary_genres,
-    STRING_AGG(DISTINCT artpiece_language.name, ', ') as languages,
-    STRING_AGG(DISTINCT artpiece_keyword.name, ', ') as keywords
+    SELECT
+      artpiece.*,
+      artpiece_type.name as type,
+      JSONB_AGG(
+        DISTINCT
+        JSONB_BUILD_OBJECT(
+          'id', artist.id,
+          'name', artist.name
+        )
+      ) AS artists,
+      JSONB_AGG(DISTINCT genre.name) as genres,
+      JSONB_AGG(DISTINCT secondary_genre.name) as secondary_genres,
+      JSONB_AGG(DISTINCT artpiece_language.name) as languages,
+      JSONB_AGG(DISTINCT artpiece_keyword.name) as keywords
 
-  FROM artpiece
+    FROM artpiece
 
-  LEFT JOIN artpiece_genre ON artpiece_genre.artpiece_id = artpiece.id
-  LEFT JOIN genre ON genre.id = artpiece_genre.genre_id
+    LEFT JOIN artist_artpiece ON artist_artpiece.artpiece_id = artpiece.id
+    LEFT JOIN artist ON artist.id = artist_artpiece.artist_id
 
-  LEFT JOIN artpiece_secondary_genre ON artpiece_secondary_genre.artpiece_id = artpiece.id
-  LEFT JOIN genre secondary_genre ON secondary_genre.id = artpiece_secondary_genre.genre_id
+    LEFT JOIN artpiece_genre ON artpiece_genre.artpiece_id = artpiece.id
+    LEFT JOIN genre ON genre.id = artpiece_genre.genre_id
 
-  LEFT JOIN artpiece_artpiece_language ON artpiece_artpiece_language.artpiece_id = artpiece.id
-  LEFT JOIN artpiece_language ON artpiece_language.id = artpiece_artpiece_language.artpiece_language_id
+    LEFT JOIN artpiece_secondary_genre ON artpiece_secondary_genre.artpiece_id = artpiece.id
+    LEFT JOIN genre secondary_genre ON secondary_genre.id = artpiece_secondary_genre.genre_id
 
-  LEFT JOIN artpiece_artpiece_type ON artpiece_artpiece_type.artpiece_id = artpiece.id
-  LEFT JOIN artpiece_type ON artpiece_type.id = artpiece_artpiece_type.artpiece_type_id
+    LEFT JOIN artpiece_artpiece_language ON artpiece_artpiece_language.artpiece_id = artpiece.id
+    LEFT JOIN artpiece_language ON artpiece_language.id = artpiece_artpiece_language.artpiece_language_id
 
-  LEFT JOIN artpiece_artpiece_keyword ON artpiece_artpiece_keyword.artpiece_id = artpiece.id
-  LEFT JOIN artpiece_keyword ON artpiece_keyword.id = artpiece_artpiece_keyword.artpiece_keyword_id
+    LEFT JOIN artpiece_artpiece_type ON artpiece_artpiece_type.artpiece_id = artpiece.id
+    LEFT JOIN artpiece_type ON artpiece_type.id = artpiece_artpiece_type.artpiece_type_id
 
-  WHERE artpiece.id = ${props.artpieceId}
+    LEFT JOIN artpiece_artpiece_keyword ON artpiece_artpiece_keyword.artpiece_id = artpiece.id
+    LEFT JOIN artpiece_keyword ON artpiece_keyword.id = artpiece_artpiece_keyword.artpiece_keyword_id
 
-  GROUP BY artpiece.id, artpiece_type.name
-`;
+    WHERE artpiece.id = ${props.artpieceId}
+
+    GROUP BY artpiece.id, artpiece_type.name
+  `;
 
   const entries = [
     {
@@ -56,7 +68,10 @@ export default async function Info(props: InfoProps) {
     },
     {
       icon: <UserIcon />,
-      content: row.artist,
+      content: row.artists.map((artist: any) => ({
+        content: artist.name,
+        href: `/artist/${artist.id}`,
+      })),
       tooltip: "Artist",
     },
     {
@@ -82,10 +97,11 @@ export default async function Info(props: InfoProps) {
       content: (
         <div className="flex flex-col">
           <InfoEntry content={row.genres} />
-          {row.secondary_genres && row.secondary_genres.length > 0 && (
-            <div className="text-lg text-wrap text-muted-foreground">
-              {row.secondary_genres}
-            </div>
+          {row.secondary_genres && (
+            <InfoEntry
+              content={row.secondary_genres}
+              className="text-lg text-wrap text-muted-foreground"
+            />
           )}
         </div>
       ),
@@ -129,10 +145,56 @@ type InfoProps = {
   user?: User;
 };
 
-function InfoEntry({ content }: { content: string }) {
+function InfoEntry(props: InfoEntryProps) {
+  const contents = Array.isArray(props.content)
+    ? props.content
+    : [props.content];
+
+  const contentsWithOptionalHref = contents.map((content) =>
+    typeof content == "string"
+      ? {
+          content,
+          href: undefined,
+        }
+      : {
+          content: content.content,
+          href: content.href,
+        },
+  );
+
+  const component = (content: string) =>
+    (content && <span className={props.className}>{content}</span>) || (
+      <span className={cn("text-muted-foreground", props.className)}>
+        Unknown
+      </span>
+    );
+
   return (
     <div className="text-wrap">
-      {content || <span className="text-muted-foreground">Unknown</span>}
+      {contentsWithOptionalHref.map((content, i) => (
+        <Fragment key={i}>
+          {content.href ? (
+            <Link href={content.href} className="hover:underline">
+              {component(content.content)}
+            </Link>
+          ) : (
+            component(content.content)
+          )}
+          {i < contentsWithOptionalHref.length - 1 ? ", " : ""}
+        </Fragment>
+      ))}
     </div>
   );
 }
+
+type InfoEntryProps = {
+  content: string | string[] | ContentWithHref | ContentWithHref[];
+  className?: string;
+};
+
+type ContentWithHref = {
+  content: string;
+  href: string;
+};
+
+type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;

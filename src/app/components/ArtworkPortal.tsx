@@ -1,30 +1,18 @@
 "use client";
 
-import { cn } from "@/shadcn/lib/utils";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ComponentProps } from "react";
+import Artwork from "./Artwork";
 
-export default function ArtworkPortal({
-  artpieceId,
-  artpieceName,
-  className,
-  ...imageProps
-}: ArtworkPortalProps) {
+export default function ArtworkPortal(props: ArtworkPortalProps) {
   const router = useRouter();
 
   return (
-    <Image
-      {...imageProps}
-      className={cn("drop-shadow-md", className)}
-      onClick={() => router.push(`/artpiece/${artpieceId}`)}
-      src={`/artpiece/${artpieceId}/artwork.jpg`}
-      alt={artpieceName}
+    <Artwork
+      {...props}
+      onClick={() => router.push(`/artpiece/${props.artpieceId}`)}
     />
   );
 }
 
-type ArtworkPortalProps = {
-  artpieceId: number;
-  artpieceName: string;
-} & Omit<ComponentProps<typeof Image>, "src" | "alt">;
+type ArtworkPortalProps = Omit<ComponentProps<typeof Artwork>, "onClick">;

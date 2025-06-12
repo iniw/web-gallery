@@ -1,7 +1,8 @@
+import Artwork from "@/app/components/Artwork";
 import Card from "@/app/components/Card";
 import { getUser } from "@/app/lib/auth/user";
 import sql from "@/app/lib/sql";
-import Image from "next/image";
+import { notFound } from "next/navigation";
 import Comments from "./comments/components/Comments";
 import Control from "./control/components/Control";
 import Info from "./info/components/Info";
@@ -23,6 +24,8 @@ export default async function Page({
     WHERE id = ${artpieceId}
   `;
 
+  if (!row) notFound();
+
   return (
     <div
       className="grid h-full gap-5"
@@ -33,10 +36,9 @@ export default async function Page({
     >
       <Card className="h-0 min-h-full w-0 min-w-full" title="Artwork">
         <div className="flex h-full items-center justify-center">
-          <Image
-            className={"drop-shadow-md"}
-            src={`/artpiece/${row.id}/artwork.jpg`}
-            alt={row.name}
+          <Artwork
+            artpieceId={row.id}
+            artpieceName={row.name}
             width="300"
             height="300"
           />

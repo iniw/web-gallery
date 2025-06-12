@@ -18,13 +18,18 @@ export default async function Page() {
         JSONB_BUILD_OBJECT(
           'id', artpiece.id,
           'name', artpiece.name,
-          'artist', artpiece.artist,
+          'artist', artist.name,
           'date', artpiece.date
         )
         ORDER BY artpiece.id
       ) AS artpieces
     FROM category
+
     JOIN artpiece ON artpiece.category_id = category.id
+
+    LEFT JOIN artist_artpiece ON artist_artpiece.artpiece_id = artpiece.id
+    LEFT JOIN artist ON artist.id = artist_artpiece.artist_id
+
     GROUP BY category.id
   `;
 
@@ -37,8 +42,8 @@ export default async function Page() {
               <HoverCard openDelay={0} closeDelay={0} key={artpiece.id}>
                 <HoverCardTrigger asChild>
                   <ArtworkPortal
-                    className="transition-[scale] duration-200 hover:scale-102"
                     key={artpiece.id}
+                    className="transition-[scale] duration-200 hover:scale-102"
                     artpieceId={artpiece.id}
                     artpieceName={artpiece.name}
                     width={250}
@@ -79,9 +84,11 @@ function ArtpieceInfoHover(props: ArtpieceInfoHoverProps) {
           {React.cloneElement(entry.icon, {
             color: "var(--artpiece-info-icon)",
           })}
-          <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-            {entry.text}
-          </span>
+          {entry.text && (
+            <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+              {entry.text}
+            </span>
+          )}
         </p>
       ))}
     </div>
@@ -93,7 +100,7 @@ type ArtpieceInfoHoverProps = {
   artpiece: {
     id: number;
     name: string;
-    artist: string;
+    artist?: string;
     date: Date;
   };
 };

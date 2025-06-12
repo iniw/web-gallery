@@ -7,17 +7,31 @@ CREATE TABLE category (
     inserted_at timestamptz DEFAULT now()
 );
 
+-- An artist.
+-- E.g: Person, Band, Group, etc.
+CREATE TABLE artist (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    -- The name of this artpiece
+    name text NOT NULL,
+    inserted_at timestamptz DEFAULT now()
+);
+
 -- A piece of art.
 -- e.g: A Tábua de Esmeralda, Cartola (1974)
 CREATE TABLE artpiece (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     category_id integer NOT NULL REFERENCES category (id) ON DELETE RESTRICT,
-    -- The artist of the art piece
-    artist text,
     -- The name of this art piece
     name text NOT NULL,
     -- The date that this art piece was released/revealed
     date date NOT NULL,
+    inserted_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE artist_artpiece (
+    artist_id integer NOT NULL REFERENCES artist (id) ON DELETE CASCADE,
+    artpiece_id integer NOT NULL REFERENCES artpiece (id) ON DELETE CASCADE,
+    PRIMARY KEY (artist_id, artpiece_id),
     inserted_at timestamptz DEFAULT now()
 );
 
@@ -138,23 +152,59 @@ INSERT INTO category (name)
     ('Painting'),
     ('Empty');
 
-INSERT INTO artpiece (category_id, artist, name, date)
-    VALUES (1, 'Jorge Ben', 'A Tábua de Esmeralda', '1974-05-01'),
-    (1, 'Aphex Twin', 'Selected Ambient Works 85-92', '1999-01-08'),
-    (2, 'Richard Kelly', 'Donnie Darko', '2003-09-24'),
-    (3, 'Claude Monet', 'Impression, soleil levant', '1874-04-01'),
-    (1, 'Bob Dylan', 'Bringing It All Back Home', '1965-03-22'),
-    (2, 'Emir Kusturica', 'Underground', '1995-10-25'),
-    (3, 'Aleksander Rostov', 'Conquest of Revachol', '2020-05-04'),
-    (1, 'Victor & Leo', 'Borboletas', '2008-09-01'),
-    (2, 'John Lasseter', 'Cars', '2006-07-30'),
-    (3, 'Salvador Dalí', 'La persistència de la memòria', '1931-01-01'),
-    (1, 'Gorillaz', 'Demon Days', '2005-05-11'),
-    (2, 'David Fincher', 'Fight Club', '1999-10-15'),
-    (3, 'Vincent Van Gogh', 'Tournesols', '1889-01-01'),
-    (1, 'Death Grips', 'Fashion Week', '2015-01-04'),
-    (2, 'Stuart Gordon', 'Re-Animator', '1985-10-18'),
-    (3, 'Vincent Van Gogh', 'At Eternitys Gate', '1890-01-01');
+INSERT INTO artist (name)
+    VALUES ('Jorge Ben'),
+    ('Aphex Twin'),
+    ('Richard Kelly'),
+    ('Claude Monet'),
+    ('Bob Dylan'),
+    ('Emir Kusturica'),
+    ('Aleksander Rostov'),
+    ('Victor & Leo'),
+    ('John Lasseter'),
+    ('Salvador Dalí'),
+    ('Gorillaz'),
+    ('David Fincher'),
+    ('Vincent Van Gogh'),
+    ('Death Grips'),
+    ('Stuart Gordon'),
+    ('Vincent Van Gogh');
+
+INSERT INTO artpiece (category_id, name, date)
+    VALUES (1, 'A Tábua de Esmeralda', '1974-05-01'),
+    (1, 'Selected Ambient Works 85-92', '1999-01-08'),
+    (2, 'Donnie Darko', '2003-09-24'),
+    (3, 'Impression, soleil levant', '1874-04-01'),
+    (1, 'Bringing It All Back Home', '1965-03-22'),
+    (2, 'Underground', '1995-10-25'),
+    (3, 'Conquest of Revachol', '2020-05-04'),
+    (1, 'Borboletas', '2008-09-01'),
+    (2, 'Cars', '2006-07-30'),
+    (3, 'La persistència de la memòria', '1931-01-01'),
+    (1, 'Demon Days', '2005-05-11'),
+    (2, 'Fight Club', '1999-10-15'),
+    (3, 'Tournesols', '1889-01-01'),
+    (1, 'Fashion Week', '2015-01-04'),
+    (2, 'Re-Animator', '1985-10-18'),
+    (3, 'At Eternitys Gate', '1890-01-01');
+
+INSERT INTO artist_artpiece (artpiece_id, artist_id)
+    VALUES (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10),
+    (11, 11),
+    (12, 12),
+    (13, 13),
+    (14, 14),
+    (15, 15),
+    (16, 16);
 
 INSERT INTO app_user (username, password, user_role)
     VALUES ('root', 'root', 'admin');
