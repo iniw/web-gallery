@@ -52,10 +52,8 @@ export default async function Artpieces(props: ArtpiecesProps) {
   `;
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       {row.artpieces.map((artpiece: any) => {
-        console.log(artpiece.genres);
-
         const entries = [
           {
             icon: <IconForCategory categoryId={artpiece.category_id} />,
@@ -106,7 +104,7 @@ export default async function Artpieces(props: ArtpiecesProps) {
               height={200}
               width={200}
             />
-            <div className="flex flex-col gap-1 text-lg">
+            <div key={artpiece.id} className="flex flex-col gap-1 text-lg">
               {entries.map((entry, i) => (
                 <div key={i} className="flex min-w-0 items-center gap-2">
                   <Tooltip>
@@ -125,7 +123,7 @@ export default async function Artpieces(props: ArtpiecesProps) {
           </div>
         );
       })}
-    </>
+    </div>
   );
 }
 

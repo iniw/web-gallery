@@ -256,15 +256,9 @@ INSERT INTO artpiece_artpiece_language (artpiece_id, artpiece_language_id)
 INSERT INTO artpiece_keyword (name)
     VALUES ('Warm'),
     ('Tropical'),
-    ('Uplifting');
-
-INSERT INTO artpiece_artpiece_keyword (artpiece_id, artpiece_keyword_id)
-    VALUES (1, 1),
-    (2, 1);
-
-('Uplifting'),
-('Mysterious'),
-('Atmospheric');
+    ('Uplifting'),
+    ('Mysterious'),
+    ('Atmospheric');
 
 INSERT INTO artpiece_artpiece_keyword (artpiece_id, artpiece_keyword_id)
     VALUES (1, 1),
@@ -272,10 +266,6 @@ INSERT INTO artpiece_artpiece_keyword (artpiece_id, artpiece_keyword_id)
     (3, 4),
     (17, 5),
     (18, 3);
-
-INSERT INTO artpiece_artpiece_keyword (artpiece_id, artpiece_keyword_id)
-    VALUES (1, 1),
-    (2, 1);
 
 UPDATE
     artist

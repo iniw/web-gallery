@@ -12,7 +12,7 @@ import {
 } from "@/shadcn/components/form";
 import { Input } from "@/shadcn/components/input";
 import NextForm from "next/form";
-import { useActionState } from "react";
+import { ComponentProps, useActionState } from "react";
 import { Control, useForm } from "react-hook-form";
 import signup from "../actions/signup";
 import { SignupFormData } from "../lib/SignUpFormSchema";
@@ -38,6 +38,7 @@ export default function SignupForm() {
           label="Password"
           description="The password of your account"
           type="password"
+          autoComplete="off"
           errors={state?.errors?.password}
         />
         <Button type="submit">Register</Button>
@@ -92,4 +93,4 @@ type InputFieldProps = {
   placeholder?: string;
   errors?: string[];
   type?: string;
-};
+} & ComponentProps<typeof Input>;

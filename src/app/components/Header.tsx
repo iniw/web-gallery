@@ -27,7 +27,7 @@ export default function Header(props: HeaderProps) {
           <Input
             name="query"
             autoComplete="off"
-            className="max-w-100"
+            className="min-w-80"
             placeholder="Search"
           />
         </Form>

@@ -62,7 +62,10 @@ export default async function Page({
             const entries = [
               {
                 icon: <IconForCategory categoryId={artpiece.category_id} />,
-                content: artpiece.name,
+                content: {
+                  content: artpiece.name,
+                  href: `/artpiece/${artpiece.id}`,
+                },
                 tooltip: "Name",
               },
               {
