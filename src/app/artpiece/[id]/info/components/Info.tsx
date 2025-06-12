@@ -1,4 +1,5 @@
 import { IconForCategory } from "@/app/components/IconForCategory";
+import InfoEntry from "@/app/components/InfoEntry";
 import { User } from "@/app/lib/auth/user";
 import sql from "@/app/lib/sql";
 import {
@@ -6,7 +7,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shadcn/components/tooltip";
-import { cn } from "@/shadcn/lib/utils";
 import {
   Calendar,
   CircleHelp,
@@ -15,14 +15,12 @@ import {
   List,
   User as UserIcon,
 } from "lucide-react";
-import Link from "next/link";
-import React, { Fragment } from "react";
+import React from "react";
 
 export default async function Info(props: InfoProps) {
   const [row] = await sql`
     SELECT
       artpiece.*,
-      artpiece_type.name as type,
       JSONB_AGG(
         DISTINCT
         JSONB_BUILD_OBJECT(
@@ -30,10 +28,10 @@ export default async function Info(props: InfoProps) {
           'name', artist.name
         )
       ) AS artists,
-      JSONB_AGG(DISTINCT genre.name) as genres,
-      JSONB_AGG(DISTINCT secondary_genre.name) as secondary_genres,
-      JSONB_AGG(DISTINCT artpiece_language.name) as languages,
-      JSONB_AGG(DISTINCT artpiece_keyword.name) as keywords
+      JSONB_AGG(DISTINCT genre.name) FILTER (WHERE genre.id IS NOT NULL) as genres,
+      JSONB_AGG(DISTINCT secondary_genre.name) FILTER (WHERE secondary_genre.id IS NOT NULL) as secondary_genres,
+      JSONB_AGG(DISTINCT artpiece_language.name) FILTER (WHERE artpiece_language.id IS NOT NULL) as languages,
+      JSONB_AGG(DISTINCT artpiece_keyword.name) FILTER (WHERE artpiece_keyword.id IS NOT NULL) as keywords
 
     FROM artpiece
 
@@ -49,15 +47,12 @@ export default async function Info(props: InfoProps) {
     LEFT JOIN artpiece_artpiece_language ON artpiece_artpiece_language.artpiece_id = artpiece.id
     LEFT JOIN artpiece_language ON artpiece_language.id = artpiece_artpiece_language.artpiece_language_id
 
-    LEFT JOIN artpiece_artpiece_type ON artpiece_artpiece_type.artpiece_id = artpiece.id
-    LEFT JOIN artpiece_type ON artpiece_type.id = artpiece_artpiece_type.artpiece_type_id
-
     LEFT JOIN artpiece_artpiece_keyword ON artpiece_artpiece_keyword.artpiece_id = artpiece.id
     LEFT JOIN artpiece_keyword ON artpiece_keyword.id = artpiece_artpiece_keyword.artpiece_keyword_id
 
     WHERE artpiece.id = ${props.artpieceId}
 
-    GROUP BY artpiece.id, artpiece_type.name
+    GROUP BY artpiece.id
   `;
 
   const entries = [
@@ -100,7 +95,7 @@ export default async function Info(props: InfoProps) {
           {row.secondary_genres && (
             <InfoEntry
               content={row.secondary_genres}
-              className="text-lg text-wrap text-muted-foreground"
+              className="text-lg text-muted-foreground"
             />
           )}
         </div>
@@ -113,6 +108,8 @@ export default async function Info(props: InfoProps) {
       tooltip: "Keywords",
     },
   ];
+
+  console.log(row.genres, row.secondary_genres);
 
   return (
     <>
@@ -128,11 +125,7 @@ export default async function Info(props: InfoProps) {
               </TooltipTrigger>
               <TooltipContent>{entry.tooltip}</TooltipContent>
             </Tooltip>
-            {React.isValidElement(entry.content) ? (
-              entry.content
-            ) : (
-              <InfoEntry content={entry.content} />
-            )}
+            <InfoEntry content={entry.content} />
           </div>
         ))}
       </div>
@@ -144,57 +137,3 @@ type InfoProps = {
   artpieceId: number;
   user?: User;
 };
-
-function InfoEntry(props: InfoEntryProps) {
-  const contents = Array.isArray(props.content)
-    ? props.content
-    : [props.content];
-
-  const contentsWithOptionalHref = contents.map((content) =>
-    typeof content == "string"
-      ? {
-          content,
-          href: undefined,
-        }
-      : {
-          content: content.content,
-          href: content.href,
-        },
-  );
-
-  const component = (content: string) =>
-    (content && <span className={props.className}>{content}</span>) || (
-      <span className={cn("text-muted-foreground", props.className)}>
-        Unknown
-      </span>
-    );
-
-  return (
-    <div className="text-wrap">
-      {contentsWithOptionalHref.map((content, i) => (
-        <Fragment key={i}>
-          {content.href ? (
-            <Link href={content.href} className="hover:underline">
-              {component(content.content)}
-            </Link>
-          ) : (
-            component(content.content)
-          )}
-          {i < contentsWithOptionalHref.length - 1 ? ", " : ""}
-        </Fragment>
-      ))}
-    </div>
-  );
-}
-
-type InfoEntryProps = {
-  content: string | string[] | ContentWithHref | ContentWithHref[];
-  className?: string;
-};
-
-type ContentWithHref = {
-  content: string;
-  href: string;
-};
-
-type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;

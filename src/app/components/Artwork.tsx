@@ -13,7 +13,7 @@ export default function Artwork({
       {...props}
       className={cn("shadow-sm", className)}
       src={`/artpiece/${artpieceId}/artwork.jpg`}
-      alt={artpieceName}
+      alt={`${artpieceName}'s artwork'`}
     />
   );
 }

@@ -14,12 +14,13 @@ export default async function Page({
 }: {
   params: Promise<{ id: number }>;
 }) {
+  // TODO: Check type of the route param
   const { id: artpieceId } = await params;
 
   const user = await getUser();
 
   const [row] = await sql`
-    SELECT *
+    SELECT id, name
     FROM artpiece
     WHERE id = ${artpieceId}
   `;
@@ -34,7 +35,7 @@ export default async function Page({
         gridTemplateRows: "1fr 1.25fr",
       }}
     >
-      <Card className="h-0 min-h-full w-0 min-w-full" title="Artwork">
+      <Card title="Artwork" fill>
         <div className="flex h-full items-center justify-center">
           <Artwork
             artpieceId={row.id}
@@ -45,23 +46,23 @@ export default async function Page({
         </div>
       </Card>
 
-      <Card className="h-0 min-h-full w-0 min-w-full" title="Info">
+      <Card title="Info" fill>
         <Info user={user} artpieceId={artpieceId} />
       </Card>
 
-      <Card className="h-0 min-h-full w-0 min-w-full" title="Control">
+      <Card title="Control" fill>
         <Control user={user} artpieceId={artpieceId} />
       </Card>
 
-      <Card className="h-0 min-h-full w-0 min-w-full" title="Comments">
+      <Card title="Comments" fill>
         <Comments user={user} artpieceId={artpieceId} />
       </Card>
 
-      <Card className="h-0 min-h-full w-0 min-w-full" title="Reviews">
+      <Card title="Reviews" fill>
         <Reviews user={user} artpieceId={artpieceId} />
       </Card>
 
-      <Card className="h-0 min-h-full w-0 min-w-full" title="Ratings">
+      <Card title="Ratings" fill>
         <Ratings artpieceId={artpieceId} />
       </Card>
     </div>

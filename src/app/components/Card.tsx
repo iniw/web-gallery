@@ -6,6 +6,7 @@ export default function Card(props: CardProps) {
     <div
       className={cn(
         "flex flex-col rounded-lg border bg-card shadow-sm",
+        props.fill && "h-0 min-h-full w-0 min-w-full",
         props.className,
       )}
     >
@@ -19,4 +20,5 @@ type CardProps = {
   title: string;
   children?: ReactNode;
   className?: string;
+  fill?: boolean;
 };

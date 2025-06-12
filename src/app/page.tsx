@@ -23,6 +23,7 @@ export default async function Page() {
         )
         ORDER BY artpiece.id
       ) AS artpieces
+
     FROM category
 
     JOIN artpiece ON artpiece.category_id = category.id
@@ -78,7 +79,7 @@ function ArtpieceInfoHover(props: ArtpieceInfoHoverProps) {
   ];
 
   return (
-    <div className={"flex flex-col gap-2 text-2xl"}>
+    <div className="flex flex-col gap-2 text-2xl">
       {entries.map((entry, i) => (
         <p key={i} className="flex min-w-0 items-center gap-2">
           {React.cloneElement(entry.icon, {

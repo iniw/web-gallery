@@ -16,6 +16,11 @@ CREATE TABLE artist (
     inserted_at timestamptz DEFAULT now()
 );
 
+CREATE TYPE artpiece_type AS ENUM (
+    'Album',
+    'EP'
+);
+
 -- A piece of art.
 -- e.g: A Tábua de Esmeralda, Cartola (1974)
 CREATE TABLE artpiece (
@@ -25,6 +30,8 @@ CREATE TABLE artpiece (
     name text NOT NULL,
     -- The date that this art piece was released/revealed
     date date NOT NULL,
+    -- The type of this artpiece. See the `artpiece_type` enum.
+    type artpiece_type,
     inserted_at timestamptz DEFAULT now()
 );
 
@@ -88,21 +95,6 @@ CREATE TABLE artpiece_artpiece_language (
     artpiece_id integer NOT NULL REFERENCES artpiece (id) ON DELETE CASCADE,
     artpiece_language_id integer NOT NULL REFERENCES artpiece_language (id) ON DELETE CASCADE,
     PRIMARY KEY (artpiece_id, artpiece_language_id),
-    inserted_at timestamptz DEFAULT now()
-);
-
--- The "type" of an artpiece can be in. This is very vague and doesn't necessarily apply to every artpiece/category, but it simplifies the queries.
--- e.g: Album, EP, Short
-CREATE TABLE artpiece_type (
-    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    name text NOT NULL,
-    inserted_at timestamptz DEFAULT now()
-);
-
-CREATE TABLE artpiece_artpiece_type (
-    artpiece_id integer NOT NULL REFERENCES artpiece (id) ON DELETE CASCADE,
-    artpiece_type_id integer NOT NULL REFERENCES artpiece_type (id) ON DELETE CASCADE,
-    PRIMARY KEY (artpiece_id, artpiece_type_id),
     inserted_at timestamptz DEFAULT now()
 );
 
@@ -170,23 +162,23 @@ INSERT INTO artist (name)
     ('Stuart Gordon'),
     ('Vincent Van Gogh');
 
-INSERT INTO artpiece (category_id, name, date)
-    VALUES (1, 'A Tábua de Esmeralda', '1974-05-01'),
-    (1, 'Selected Ambient Works 85-92', '1999-01-08'),
-    (2, 'Donnie Darko', '2003-09-24'),
-    (3, 'Impression, soleil levant', '1874-04-01'),
-    (1, 'Bringing It All Back Home', '1965-03-22'),
-    (2, 'Underground', '1995-10-25'),
-    (3, 'Conquest of Revachol', '2020-05-04'),
-    (1, 'Borboletas', '2008-09-01'),
-    (2, 'Cars', '2006-07-30'),
-    (3, 'La persistència de la memòria', '1931-01-01'),
-    (1, 'Demon Days', '2005-05-11'),
-    (2, 'Fight Club', '1999-10-15'),
-    (3, 'Tournesols', '1889-01-01'),
-    (1, 'Fashion Week', '2015-01-04'),
-    (2, 'Re-Animator', '1985-10-18'),
-    (3, 'At Eternitys Gate', '1890-01-01');
+INSERT INTO artpiece (category_id, name, date, type)
+    VALUES (1, 'A Tábua de Esmeralda', '1974-05-01', 'Album'),
+    (1, 'Selected Ambient Works 85-92', '1999-01-08', 'Album'),
+    (2, 'Donnie Darko', '2003-09-24', NULL),
+    (3, 'Impression, soleil levant', '1874-04-01', NULL),
+    (1, 'Bringing It All Back Home', '1965-03-22', NULL),
+    (2, 'Underground', '1995-10-25', NULL),
+    (3, 'Conquest of Revachol', '2020-05-04', NULL),
+    (1, 'Borboletas', '2008-09-01', NULL),
+    (2, 'Cars', '2006-07-30', NULL),
+    (3, 'La persistència de la memòria', '1931-01-01', NULL),
+    (1, 'Demon Days', '2005-05-11', NULL),
+    (2, 'Fight Club', '1999-10-15', NULL),
+    (3, 'Tournesols', '1889-01-01', NULL),
+    (1, 'Fashion Week', '2015-01-04', NULL),
+    (2, 'Re-Animator', '1985-10-18', NULL),
+    (3, 'At Eternitys Gate', '1890-01-01', NULL);
 
 INSERT INTO artist_artpiece (artpiece_id, artist_id)
     VALUES (1, 1),
@@ -238,14 +230,6 @@ INSERT INTO artpiece_language (name)
 INSERT INTO artpiece_artpiece_language (artpiece_id, artpiece_language_id)
     VALUES (1, 2),
     (5, 1);
-
-INSERT INTO artpiece_type (name)
-    VALUES ('Album'),
-    ('EP');
-
-INSERT INTO artpiece_artpiece_type (artpiece_id, artpiece_type_id)
-    VALUES (1, 1),
-    (2, 1);
 
 INSERT INTO artpiece_keyword (name)
     VALUES ('Warm'),
