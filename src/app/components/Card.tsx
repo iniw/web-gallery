@@ -11,7 +11,7 @@ export default function Card(props: CardProps) {
       )}
     >
       <span className="border-b-2 p-3 text-2xl font-bold">{props.title}</span>
-      <div className="block grow overflow-scroll p-5">{props.children}</div>
+      <div className="block grow overflow-auto p-5">{props.children}</div>
     </div>
   );
 }
