@@ -13,6 +13,8 @@ CREATE TABLE artist (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     -- The name of this artpiece
     name text NOT NULL,
+    -- Some information about this artist
+    information text,
     inserted_at timestamptz DEFAULT now()
 );
 
@@ -95,10 +97,7 @@ CREATE TABLE artpiece_language (
 CREATE TABLE artpiece_artpiece_language (
     artpiece_id integer NOT NULL REFERENCES artpiece (id) ON DELETE CASCADE,
     artpiece_language_id integer NOT NULL REFERENCES artpiece_language (id) ON DELETE CASCADE,
-    PRIMARY KEY (
-        artpiece_id,
-        artpiece_language_id
-    ),
+    PRIMARY KEY (artpiece_id, artpiece_language_id),
     inserted_at timestamptz DEFAULT now()
 );
 
@@ -111,10 +110,7 @@ CREATE TABLE artpiece_keyword (
 CREATE TABLE artpiece_artpiece_keyword (
     artpiece_id integer NOT NULL REFERENCES artpiece (id) ON DELETE CASCADE,
     artpiece_keyword_id integer NOT NULL REFERENCES artpiece_keyword (id) ON DELETE CASCADE,
-    PRIMARY KEY (
-        artpiece_id,
-        artpiece_keyword_id
-    ),
+    PRIMARY KEY (artpiece_id, artpiece_keyword_id),
     inserted_at timestamptz DEFAULT now()
 );
 
@@ -145,16 +141,14 @@ CREATE TABLE comment (
     inserted_at timestamptz DEFAULT now()
 );
 
-INSERT INTO
-    category (name)
-VALUES ('Music'),
+INSERT INTO category (name)
+    VALUES ('Music'),
     ('Film'),
     ('Painting'),
     ('Empty');
 
-INSERT INTO
-    artist (name)
-VALUES ('Jorge Ben'),
+INSERT INTO artist (name)
+    VALUES ('Jorge Ben'),
     ('Aphex Twin'),
     ('Richard Kelly'),
     ('Claude Monet'),
@@ -171,121 +165,29 @@ VALUES ('Jorge Ben'),
     ('Stuart Gordon'),
     ('Vincent Van Gogh');
 
-INSERT INTO
-    artpiece (category_id, name, date, type)
-VALUES (
-        1,
-        'A Tábua de Esmeralda',
-        '1974-05-01',
-        'Album'
-    ),
-    (
-        1,
-        'Selected Ambient Works 85-92',
-        '1999-01-08',
-        'Album'
-    ),
-    (
-        2,
-        'Donnie Darko',
-        '2003-09-24',
-        'Long'
-    ),
-    (
-        3,
-        'Impression, soleil levant',
-        '1874-04-01',
-        NULL
-    ),
-    (
-        1,
-        'Bringing It All Back Home',
-        '1965-03-22',
-        NULL
-    ),
-    (
-        2,
-        'Underground',
-        '1995-10-25',
-        NULL
-    ),
-    (
-        3,
-        'Conquest of Revachol',
-        '2020-05-04',
-        NULL
-    ),
-    (
-        1,
-        'Borboletas',
-        '2008-09-01',
-        NULL
-    ),
+INSERT INTO artpiece (category_id, name, date, type)
+    VALUES (1, 'A Tábua de Esmeralda', '1974-05-01', 'Album'),
+    (1, 'Selected Ambient Works 85-92', '1999-01-08', 'Album'),
+    (2, 'Donnie Darko', '2003-09-24', 'Long'),
+    (3, 'Impression, soleil levant', '1874-04-01', NULL),
+    (1, 'Bringing It All Back Home', '1965-03-22', NULL),
+    (2, 'Underground', '1995-10-25', NULL),
+    (3, 'Conquest of Revachol', '2020-05-04', NULL),
+    (1, 'Borboletas', '2008-09-01', NULL),
     (2, 'Cars', '2006-07-30', NULL),
-    (
-        3,
-        'La persistència de la memòria',
-        '1931-01-01',
-        NULL
-    ),
-    (
-        1,
-        'Demon Days',
-        '2005-05-11',
-        NULL
-    ),
-    (
-        2,
-        'Fight Club',
-        '1999-10-15',
-        NULL
-    ),
-    (
-        3,
-        'Tournesols',
-        '1889-01-01',
-        NULL
-    ),
-    (
-        1,
-        'Fashion Week',
-        '2015-01-04',
-        NULL
-    ),
-    (
-        2,
-        'Re-Animator',
-        '1985-10-18',
-        NULL
-    ),
-    (
-        3,
-        'At Eternitys Gate',
-        '1890-01-01',
-        NULL
-    ),
-    (
-        1,
-        'Selected Ambient Works II',
-        '1994-03-07',
-        'Album'
-    ),
-    (
-        1,
-        'Fôrça bruta',
-        '1970-09-01',
-        'Album'
-    ),
-    (
-        1,
-        'Jorge Ben',
-        '1969-11-01',
-        'Album'
-    );
+    (3, 'La persistència de la memòria', '1931-01-01', NULL),
+    (1, 'Demon Days', '2005-05-11', NULL),
+    (2, 'Fight Club', '1999-10-15', NULL),
+    (3, 'Tournesols', '1889-01-01', NULL),
+    (1, 'Fashion Week', '2015-01-04', NULL),
+    (2, 'Re-Animator', '1985-10-18', NULL),
+    (3, 'At Eternitys Gate', '1890-01-01', NULL),
+    (1, 'Selected Ambient Works II', '1994-03-07', 'Album'),
+    (1, 'Fôrça bruta', '1970-09-01', 'Album'),
+    (1, 'Jorge Ben', '1969-11-01', 'Album');
 
-INSERT INTO
-    artist_artpiece (artpiece_id, artist_id)
-VALUES (1, 1),
+INSERT INTO artist_artpiece (artpiece_id, artist_id)
+    VALUES (1, 1),
     (2, 2),
     (3, 3),
     (4, 4),
@@ -305,21 +207,17 @@ VALUES (1, 1),
     (18, 1),
     (19, 1);
 
-INSERT INTO
-    app_user (username, password, user_role)
-VALUES ('root', 'root', 'admin');
+INSERT INTO app_user (username, password, user_role)
+    VALUES ('root', 'root', 'admin');
 
-INSERT INTO
-    rating (user_id, artpiece_id, value)
-VALUES (1, 1, 5);
+INSERT INTO rating (user_id, artpiece_id, value)
+    VALUES (1, 1, 5);
 
-INSERT INTO
-    review (user_id, artpiece_id, content)
-VALUES (1, 1, 'oi');
+INSERT INTO review (user_id, artpiece_id, content)
+    VALUES (1, 1, 'oi');
 
-INSERT INTO
-    genre (category_id, name)
-VALUES (1, 'Samba-Rock'),
+INSERT INTO genre (category_id, name)
+    VALUES (1, 'Samba-Rock'),
     (1, 'Samba-Soul'),
     (1, 'MPB'),
     (1, 'Techno-Ambient'),
@@ -327,60 +225,64 @@ VALUES (1, 'Samba-Rock'),
     (1, 'Eletronic'),
     (2, 'Drama'),
     (2, 'Suspense');
-    
 
-INSERT INTO
-    artpiece_genre (artpiece_id, genre_id)
-VALUES (1, 1),
+INSERT INTO artpiece_genre (artpiece_id, genre_id)
+    VALUES (1, 1),
     (1, 3),
     (2, 4),
     (3, 7),
     (17, 5),
     (18, 2),
     (19, 3);
-    
 
-INSERT INTO
-    artpiece_secondary_genre (artpiece_id, genre_id)
-VALUES (1, 2),
+INSERT INTO artpiece_secondary_genre (artpiece_id, genre_id)
+    VALUES (1, 2),
     (2, 5),
     (3, 8),
     (17, 6),
     (18, 3),
     (19, 1);
-    
 
-INSERT INTO
-    artpiece_language (name)
-VALUES ('English'),
+INSERT INTO artpiece_language (name)
+    VALUES ('English'),
     ('Portuguese');
 
-INSERT INTO
-    artpiece_artpiece_language (
-        artpiece_id,
-        artpiece_language_id
-    )
-VALUES (1, 2),
+INSERT INTO artpiece_artpiece_language (artpiece_id, artpiece_language_id)
+    VALUES (1, 2),
     (5, 1),
     (3, 1),
     (18, 1);
 
-INSERT INTO
-    artpiece_keyword (name)
-VALUES ('Warm'),
+INSERT INTO artpiece_keyword (name)
+    VALUES ('Warm'),
     ('Tropical'),
-    ('Uplifting'),
-    ('Mysterious'),
-    ('Atmospheric');
+    ('Uplifting');
 
-INSERT INTO
-    artpiece_artpiece_keyword (
-        artpiece_id,
-        artpiece_keyword_id
-    )
-VALUES (1, 1),
+INSERT INTO artpiece_artpiece_keyword (artpiece_id, artpiece_keyword_id)
+    VALUES (1, 1),
+    (2, 1);
+
+('Uplifting'),
+('Mysterious'),
+('Atmospheric');
+
+INSERT INTO artpiece_artpiece_keyword (artpiece_id, artpiece_keyword_id)
+    VALUES (1, 1),
     (2, 1),
     (3, 4),
     (17, 5),
     (18, 3);
-    
+
+INSERT INTO artpiece_artpiece_keyword (artpiece_id, artpiece_keyword_id)
+    VALUES (1, 1),
+    (2, 1);
+
+UPDATE
+    artist
+SET
+    information = 'Jorge Duílio Lima Menezes is a Brazilian popular musician, performing under the stage name Jorge Ben Jor since the 1980s, though commonly known by his former stage name Jorge Ben . Performing in a samba style that also explored soul, funk, rock and bossa nova sounds, Ben has recorded such well-known songs as "Chove Chuva", "Mas Que Nada", "Ive Brussel" and "Balança Pema". His music has been covered by artists such as Caetano Veloso, Sérgio Mendes, Miriam Makeba, Soulfly and Marisa Monte.
+
+Ben''s broad-minded and original approach to samba led him through participation in some of Brazilian popular music''s most important musical movements, such as bossa nova, Jovem Guarda, and Tropicália, with the latter period defined by his albums Jorge Ben (1969) and Fôrça Bruta (1970). He has been called "the father of samba rock", by Billboard magazine. According to American music critic Robert Christgau, Ben and his contemporary Gilberto Gil were "always ready to go further out on a beat than the other samba/bossa geniuses".'
+WHERE
+    artist.id = 1;
+

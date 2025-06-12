@@ -7,13 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shadcn/components/tooltip";
-import {
-  Calendar,
-  CircleHelp,
-  Dna,
-  Languages,
-  User as UserIcon,
-} from "lucide-react";
+import { Calendar, CircleHelp, Dna } from "lucide-react";
 import React from "react";
 
 export default async function Artpieces(props: ArtpiecesProps) {
@@ -65,7 +59,10 @@ export default async function Artpieces(props: ArtpiecesProps) {
         const entries = [
           {
             icon: <IconForCategory categoryId={artpiece.category_id} />,
-            content: artpiece.name,
+            content: {
+              content: artpiece.name,
+              href: `/artpiece/${artpiece.id}`,
+            },
             tooltip: "Name",
           },
           {

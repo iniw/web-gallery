@@ -11,6 +11,7 @@ import {
 } from "@/shadcn/components/dropdown-menu";
 import { Input } from "@/shadcn/components/input";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
+import Form from "next/form";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,7 +23,14 @@ export default function Header(props: HeaderProps) {
         <Link href="/" className="text-3xl font-bold">
           Web Gallery
         </Link>
-        <Input className="max-w-100" placeholder="Search" />
+        <Form action="/search">
+          <Input
+            name="query"
+            autoComplete="off"
+            className="max-w-100"
+            placeholder="Search"
+          />
+        </Form>
         <div className="ml-auto flex items-center">
           <UserInfo {...props.userInfo} />
         </div>
