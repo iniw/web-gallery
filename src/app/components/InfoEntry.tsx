@@ -6,30 +6,28 @@ import { Fragment } from "react";
 export default function InfoEntry(props: InfoEntryProps) {
   if (React.isValidElement(props.content)) return props.content;
 
-  const contents = Array.isArray(props.content)
-    ? props.content
-    : [props.content];
+  const contents =
+    props.content &&
+    (Array.isArray(props.content) ? props.content : [props.content]);
 
   const contentsWithOptionalHref =
     contents &&
     contents.map((content) =>
-      content
-        ? typeof content == "string"
-          ? {
-              content,
-              href: undefined,
-            }
-          : {
-              content: content.content as string,
-              href: content.href as string,
-            }
-        : null,
+      typeof content == "string"
+        ? {
+            content,
+            href: undefined,
+          }
+        : {
+            content: content.content as string,
+            href: content.href as string,
+          },
     );
 
   return (
     <div className="text-wrap">
-      {contentsWithOptionalHref.map((content, i) =>
-        content ? (
+      {contentsWithOptionalHref ? (
+        contentsWithOptionalHref.map((content, i) => (
           <Fragment key={i}>
             {content.href ? (
               <Link
@@ -41,16 +39,15 @@ export default function InfoEntry(props: InfoEntryProps) {
             ) : (
               <span className={props.className}>{content.content}</span>
             )}
-            {i < contentsWithOptionalHref.length - 1 ? ", " : ""}
+            <span className={props.className}>
+              {i < contentsWithOptionalHref.length - 1 ? ", " : ""}
+            </span>
           </Fragment>
-        ) : (
-          <span
-            key={i}
-            className={cn("text-muted-foreground", props.className)}
-          >
-            Unknown
-          </span>
-        ),
+        ))
+      ) : (
+        <span className={cn("text-muted-foreground", props.className)}>
+          Unknown
+        </span>
       )}
     </div>
   );
